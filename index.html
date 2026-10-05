@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Codex Prime — site web statique prêt pour GitHub Pages">
+  <meta name="theme-color" content="#0b1020">
+  <title>Codex Prime</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070b16;
+      --panel: rgba(18, 26, 48, .72);
+      --text: #f5f7ff;
+      --muted: #aab4cf;
+      --accent: #8b5cf6;
+      --accent-2: #22d3ee;
+      --border: rgba(255,255,255,.1);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(139,92,246,.24), transparent 30rem),
+        radial-gradient(circle at 85% 10%, rgba(34,211,238,.18), transparent 28rem),
+        var(--bg);
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1100px, calc(100% - 40px)); margin: 0 auto; }
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 0;
+    }
+    .brand { font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .github {
+      padding: 10px 15px; border: 1px solid var(--border); border-radius: 999px;
+      background: rgba(255,255,255,.04); color: var(--muted);
+    }
+    .hero { padding: 110px 0 90px; text-align: center; }
+    .badge {
+      display: inline-block; padding: 7px 12px; border: 1px solid var(--border);
+      border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.04);
+      font-size: .9rem;
+    }
+    h1 { margin: 22px 0 18px; font-size: clamp(3rem, 9vw, 6.5rem); line-height: .95; letter-spacing: -.06em; }
+    .gradient {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { max-width: 700px; margin: 0 auto 32px; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.7; }
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; padding: 13px 20px;
+      border-radius: 12px; border: 1px solid var(--border); font-weight: 700;
+    }
+    .primary { background: linear-gradient(90deg, var(--accent), #6366f1); border: 0; }
+    .section { padding: 45px 0 90px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .card {
+      padding: 26px; border: 1px solid var(--border); border-radius: 20px;
+      background: var(--panel); backdrop-filter: blur(14px);
+    }
+    .card h2 { margin-top: 0; font-size: 1.15rem; }
+    .card p { color: var(--muted); line-height: 1.65; }
+    footer { padding: 28px 0 45px; color: var(--muted); text-align: center; font-size: .9rem; }
+    @media (max-width: 760px) {
+      .hero { padding-top: 70px; }
+      .grid { grid-template-columns: 1fr; }
+      .wrap { width: min(100% - 28px, 1100px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <nav aria-label="Navigation principale">
+      <a class="brand" href="./">Codex Prime</a>
+      <a class="github" href="https://github.com/ben-scap/codex-prime" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <span class="badge">GitHub Pages · Static Web</span>
+      <h1>Bienvenue sur<br><span class="gradient">Codex Prime</span></h1>
+      <p class="lead">
+        Une base web légère, moderne et autonome, prête à être personnalisée
+        et publiée directement depuis GitHub Pages.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="#projet">Découvrir</a>
+        <a class="btn" href="https://github.com/ben-scap/codex-prime" rel="noopener">Voir le dépôt</a>
+      </div>
+    </section>
+
+    <section id="projet" class="section wrap">
+      <div class="grid">
+        <article class="card">
+          <h2>⚡ Simple</h2>
+          <p>Un seul fichier HTML, sans framework ni étape de compilation.</p>
+        </article>
+        <article class="card">
+          <h2>🚀 Prêt à publier</h2>
+          <p>Compatible avec GitHub Pages depuis la racine de la branche main.</p>
+        </article>
+        <article class="card">
+          <h2>🧩 Facile à personnaliser</h2>
+          <p>Modifiez le HTML et les styles pour transformer rapidement cette base en votre site.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Codex Prime · Propulsé par GitHub Pages
+  </footer>
+</body>
+</html>
