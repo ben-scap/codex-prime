@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sélection de ressources et d'outils de vibe coding, classés par usage et reliés à leurs sites officiels.">
+  <meta name="theme-color" content="#070b16">
+  <title>Outils de Vibe Coding — Codex Prime</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070b16;--panel:rgba(18,26,48,.76);--text:#f5f7ff;--muted:#aab4cf;--accent:#a78bfa;--cyan:#22d3ee;--border:rgba(255,255,255,.11)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}
+    body{margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 10% 8%,rgba(139,92,246,.22),transparent 32rem),radial-gradient(circle at 92% 16%,rgba(34,211,238,.14),transparent 30rem),var(--bg);line-height:1.6}
+    a{color:inherit}.wrap{width:min(1160px,calc(100% - 36px));margin:auto}
+    nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0}.brand{font-weight:850;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}.navlinks{display:flex;gap:10px;flex-wrap:wrap}.pill-link,.source-link{display:inline-flex;align-items:center;padding:8px 13px;border:1px solid var(--border);border-radius:999px;background:#ffffff08;color:var(--muted);text-decoration:none;font-size:.9rem}
+    .hero{padding:70px 0 42px;text-align:center}.eyebrow{display:inline-block;padding:6px 12px;border:1px solid var(--border);border-radius:999px;color:var(--muted);background:#ffffff08;font-size:.88rem}
+    h1{font-size:clamp(2.8rem,8vw,5.8rem);line-height:.99;letter-spacing:-.065em;margin:22px 0}.gradient{background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .lead{max-width:780px;margin:0 auto 24px;color:var(--muted);font-size:clamp(1rem,2vw,1.2rem)}
+    .hero-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.btn{display:inline-flex;padding:12px 17px;border-radius:12px;border:1px solid var(--border);text-decoration:none;font-weight:750}.primary{background:linear-gradient(100deg,#7c3aed,#4f46e5);border:0}
+    .notice{margin:20px auto 0;max-width:850px;color:var(--muted);font-size:.9rem}
+    .toolbar{position:sticky;top:0;z-index:5;padding:14px 0;background:rgba(7,11,22,.88);backdrop-filter:blur(16px);border-block:1px solid var(--border)}
+    .toolsbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.search{flex:1 1 240px;min-width:0;padding:12px 14px;color:var(--text);background:#10172a;border:1px solid var(--border);border-radius:12px;font:inherit}.filters{display:flex;gap:7px;flex-wrap:wrap}.filter{cursor:pointer;border:1px solid var(--border);border-radius:999px;padding:8px 12px;color:var(--muted);background:#ffffff06;font:inherit;font-size:.88rem}.filter[aria-pressed=true]{background:#8b5cf626;border-color:#a78bfa;color:var(--text)}
+    .section{padding:34px 0 24px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:17px}.section h2{font-size:clamp(1.45rem,3vw,2rem);letter-spacing:-.035em;margin:0}.section-head p{margin:5px 0 0;color:var(--muted)}.count{color:var(--muted);font-size:.9rem;white-space:nowrap}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{display:flex;flex-direction:column;padding:21px;border:1px solid var(--border);border-radius:18px;background:var(--panel);min-height:190px;transition:transform .18s,border-color .18s}.card:hover{transform:translateY(-3px);border-color:#a78bfa88}.card-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.card h3{margin:0;font-size:1.08rem}.type{font-size:.73rem;color:#c4b5fd;background:#a78bfa17;border:1px solid #a78bfa33;border-radius:999px;padding:3px 8px;white-space:nowrap}.card p{margin:12px 0 18px;color:var(--muted);font-size:.94rem;flex:1}.card a{font-weight:700;text-decoration:none;color:#a5f3fc}.card a:hover{text-decoration:underline}.empty{display:none;padding:28px;color:var(--muted);text-align:center;border:1px dashed var(--border);border-radius:16px}
+    .infographic{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.75fr);gap:24px;align-items:center;padding:25px;border:1px solid var(--border);border-radius:20px;background:var(--panel)}.infographic img{width:100%;height:auto;border-radius:12px;border:1px solid var(--border);background:#fff}.infographic p{color:var(--muted)}.small{font-size:.88rem;color:var(--muted)}
+    .sources{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.sources a{color:#a5f3fc}.tip{padding:17px 20px;border-left:3px solid var(--cyan);background:#22d3ee0c;border-radius:0 12px 12px 0;color:var(--muted)}
+    footer{padding:38px 0 48px;text-align:center;color:var(--muted);font-size:.9rem}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.infographic{grid-template-columns:1fr}.infographic img{max-height:520px;object-fit:contain}}
+    @media(max-width:560px){.wrap{width:calc(100% - 26px)}.hero{padding-top:48px}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.navlinks .pill-link:first-child{display:none}.card{min-height:unset}.toolbar{position:static}}
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <nav aria-label="Navigation principale">
+      <a class="brand" href="./">Codex Prime</a>
+      <div class="navlinks">
+        <a class="pill-link" href="./">Accueil</a>
+        <a class="pill-link" href="https://github.com/ben-scap/codex-prime" target="_blank" rel="noopener noreferrer">Dépôt GitHub ↗</a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section class="hero wrap">
+      <span class="eyebrow">Guide pratique · Vibe coding</span>
+      <h1>Du prompt au<br><span class="gradient">produit.</span></h1>
+      <p class="lead">Une sélection d’outils pour concevoir une interface, générer du code, connecter des données, tester et publier une application avec l’aide de l’IA.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#catalogue">Explorer les outils ↓</a>
+        <a class="btn" href="#sources">Voir les sources</a>
+      </div>
+      <p class="notice">Les outils sont classés par tâche, pas par classement de popularité. Les prix et conditions d’accès peuvent changer : consultez toujours le site officiel avant de choisir.</p>
+    </section>
+
+    <section class="toolbar" aria-label="Recherche et filtres">
+      <div class="wrap toolsbar">
+        <input class="search" id="search" type="search" placeholder="Rechercher un outil ou un usage…" aria-label="Rechercher un outil ou un usage">
+        <div class="filters" role="group" aria-label="Filtrer par catégorie">
+          <button class="filter" data-filter="all" aria-pressed="true">Tout</button>
+          <button class="filter" data-filter="app" aria-pressed="false">Créer une app</button>
+          <button class="filter" data-filter="code" aria-pressed="false">Coder</button>
+          <button class="filter" data-filter="context" aria-pressed="false">Contexte & intégrations</button>
+          <button class="filter" data-filter="quality" aria-pressed="false">Tester & sécuriser</button>
+          <button class="filter" data-filter="delivery" aria-pressed="false">Déployer</button>
+          <button class="filter" data-filter="ops" aria-pressed="false">Orchestrer</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap" id="catalogue">
+      <section class="section" data-section="app">
+        <div class="section-head"><div><h2>01 · Créer une application ou une interface</h2><p>Partir d’une idée, d’un prompt ou d’un design pour produire un prototype.</p></div><span class="count">6 outils</span></div>
+        <div class="grid">
+          <article class="card" data-category="app"><div class="card-top"><h3>Bolt.new</h3><span class="type">Web</span></div><p>Générer et faire évoluer une application à partir d’instructions en langage naturel.</p><a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app"><div class="card-top"><h3>Dyad</h3><span class="type">Desktop</span></div><p>Créer des applications en local avec des fournisseurs de modèles configurables.</p><a href="https://github.com/dyad-sh/dyad" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="app"><div class="card-top"><h3>Lovable</h3><span class="type">Web</span></div><p>Construire des applications full-stack, notamment avec une intégration Supabase.</p><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app"><div class="card-top"><h3>Onlook</h3><span class="type">Visuel</span></div><p>Modifier visuellement une interface tout en travaillant sur le code de l’application.</p><a href="https://www.onlook.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app"><div class="card-top"><h3>Replit Agent</h3><span class="type">Web</span></div><p>Créer et itérer sur des applications dans l’environnement Replit.</p><a href="https://replit.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app"><div class="card-top"><h3>v0</h3><span class="type">UI / React</span></div><p>Générer des interfaces et du code React avec l’IA de Vercel.</p><a href="https://v0.app/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+        </div>
+      </section>
+
+      <section class="section" data-section="code">
+        <div class="section-head"><div><h2>02 · Écrire, comprendre et refactorer le code</h2><p>Assistants de programmation, agents et environnements de développement.</p></div><span class="count">10 outils</span></div>
+        <div class="grid">
+          <article class="card" data-category="code"><div class="card-top"><h3>Aider</h3><span class="type">CLI · Open source</span></div><p>Pair programming dans le terminal avec des modèles cloud ou locaux et intégration Git.</p><a href="https://github.com/Aider-AI/aider" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Claude Code</h3><span class="type">Agent CLI</span></div><p>Agent de code pour travailler dans un dépôt et exécuter des workflows de développement.</p><a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Cline</h3><span class="type">Agent</span></div><p>Agent pour IDE, terminal et desktop, avec outils pour les fichiers, commandes et navigateur.</p><a href="https://github.com/cline/cline" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Cursor</h3><span class="type">IDE</span></div><p>Éditeur de code orienté IA pour implémenter, déboguer et revoir du code.</p><a href="https://www.cursor.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>GitHub Copilot</h3><span class="type">Assistant</span></div><p>Assistance à la programmation et workflows d’agents dans GitHub et les IDE compatibles.</p><a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Goose</h3><span class="type">CLI / Desktop</span></div><p>Agent extensible avec interfaces terminal et desktop, et intégrations MCP.</p><a href="https://github.com/aaif-goose/goose" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Kiro</h3><span class="type">IDE / CLI</span></div><p>Agent de développement AWS avec spécifications et tests intégrés au workflow.</p><a href="https://kiro.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>OpenAI Codex</h3><span class="type">Agent</span></div><p>Agent de programmation pour aider à comprendre, modifier et vérifier un projet.</p><a href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Pi</h3><span class="type">CLI · MIT</span></div><p>Agent de code en terminal, extensible, avec prise en charge de plusieurs fournisseurs.</p><a href="https://github.com/earendil-works/pi" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code"><div class="card-top"><h3>Warp Terminal</h3><span class="type">Terminal</span></div><p>Terminal moderne conçu pour les workflows de développement assistés par agents.</p><a href="https://www.warp.dev/terminal" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+        </div>
+      </section>
+
+      <section class="section" data-section="context">
+        <div class="section-head"><div><h2>03 · Ajouter du contexte et connecter les outils</h2><p>Donner aux agents accès aux règles du projet, à la documentation et aux services.</p></div><span class="count">8 outils</span></div>
+        <div class="grid">
+          <article class="card" data-category="context"><div class="card-top"><h3>Caliber</h3><span class="type">Configuration</span></div><p>Générer et synchroniser des configurations d’agents IA pour plusieurs environnements.</p><a href="https://github.com/caliber-ai-org/ai-setup" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>Context7</h3><span class="type">MCP</span></div><p>Fournir aux assistants la documentation à jour des bibliothèques et frameworks.</p><a href="https://github.com/upstash/context7" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>Filesystem MCP</h3><span class="type">MCP</span></div><p>Permettre aux agents d’accéder aux fichiers d’un projet selon des chemins autorisés.</p><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>GitHub MCP</h3><span class="type">MCP</span></div><p>Connecter un agent aux dépôts, issues et pull requests GitHub.</p><a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>Neon MCP</h3><span class="type">MCP / Base de données</span></div><p>Connecter les workflows IA aux bases de données Neon.</p><a href="https://github.com/neondatabase/mcp-server-neon" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>Notion MCP</h3><span class="type">MCP</span></div><p>Rechercher, lire et mettre à jour du contenu Notion depuis un agent compatible.</p><a href="https://developers.notion.com/guides/mcp/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>OpenSpec</h3><span class="type">Spécifications</span></div><p>Structurer le développement avec des spécifications adaptées aux assistants IA.</p><a href="https://github.com/Fission-AI/OpenSpec" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context"><div class="card-top"><h3>Supabase MCP</h3><span class="type">MCP / Backend</span></div><p>Connecter des agents aux schémas, requêtes et configurations Supabase.</p><a href="https://github.com/supabase/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+        </div>
+      </section>
+
+      <section class="section" data-section="quality">
+        <div class="section-head"><div><h2>04 · Tester, relire et sécuriser</h2><p>Vérifier le résultat généré avant de le partager ou de le déployer.</p></div><span class="count">7 outils</span></div>
+        <div class="grid">
+          <article class="card" data-category="quality"><div class="card-top"><h3>Agent QA</h3><span class="type">Tests</span></div><p>Créer et exécuter des workflows de tests web et mobile en langage naturel.</p><a href="https://github.com/vostride/agent-qa" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality"><div class="card-top"><h3>Playwright MCP</h3><span class="type">Navigateur</span></div><p>Automatiser le navigateur avec l’implémentation MCP maintenue par Microsoft.</p><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality"><div class="card-top"><h3>PR-Agent</h3><span class="type">Revue de code</span></div><p>Obtenir de l’aide pour relire des pull requests et repérer les changements à examiner.</p><a href="https://github.com/The-PR-Agent/pr-agent" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality"><div class="card-top"><h3>Prbl</h3><span class="type">Sécurité</span></div><p>Scanner une application ou un dépôt pour rechercher des vulnérabilités fréquentes du code généré.</p><a href="https://getprbl.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="quality"><div class="card-top"><h3>Qodo</h3><span class="type">Qualité du code</span></div><p>Outils IA pour la revue de code et l’amélioration de la qualité logicielle.</p><a href="https://www.qodo.ai/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="quality"><div class="card-top"><h3>Semgrep MCP</h3><span class="type">Sécurité</span></div><p>Connecter les contrôles d’analyse de sécurité Semgrep aux workflows MCP.</p><a href="https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality"><div class="card-top"><h3>Sentry MCP</h3><span class="type">Diagnostic</span></div><p>Inspecter les erreurs d’application et aider à diagnostiquer les échecs.</p><a href="https://github.com/getsentry/sentry-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+        </div>
+      </section>
+
+      <section class="section" data-section="delivery">
+        <div class="section-head"><div><h2>05 · Déployer et exécuter</h2><p>Publier le projet ou fournir un environnement d’exécution adapté.</p></div><span class="count">4 outils</span></div>
+        <div class="grid">
+          <article class="card" data-category="delivery"><div class="card-top"><h3>Cloudflare MCP</h3><span class="type">Cloud</span></div><p>Connecter des workflows agentiques aux services et ressources Cloudflare.</p><a href="https://github.com/cloudflare/mcp-server-cloudflare" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="delivery"><div class="card-top"><h3>E2B</h3><span class="type">Sandbox</span></div><p>Fournir des environnements isolés pour exécuter du code généré par des agents IA.</p><a href="https://github.com/e2b-dev/E2B" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="delivery"><div class="card-top"><h3>Publish.my</h3><span class="type">Publication</span></div><p>Publier des sites statiques avec un workflow orienté agents.</p><a href="https://publish.my/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="delivery"><div class="card-top"><h3>XcodeBuildMCP</h3><span class="type">Apple</span></div><p>Compiler, exécuter et déboguer des projets Apple avec des outils CLI et MCP.</p><a href="https://github.com/getsentry/XcodeBuildMCP" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+        </div>
+      </section>
+
+      <section class="section" data-section="ops">
+        <div class="section-head"><div><h2>06 · Orchestrer les agents et les sessions</h2><p>Gérer le travail en parallèle, les espaces de travail et l’usage des modèles.</p></div><span class="count">8 outils</span></div>
+        <div class="grid">
+          <article class="card" data-category="ops"><div class="card-top"><h3>Delta (Zed)</h3><span class="type">Collaboration</span></div><p>Espace de travail multijoueur pour agents de code et revue des changements.</p><a href="https://delta.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>Duckweed</h3><span class="type">Desktop</span></div><p>Gérer localement des agents, shells, diffs Git et sessions de développement.</p><a href="https://github.com/MusicMaster4/Duckweed" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>llm.log</h3><span class="type">Observabilité</span></div><p>Inspecter les coûts, tokens et traces de requêtes de modèles via un proxy local.</p><a href="https://github.com/lanesket/llm.log" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>Parallel Code</h3><span class="type">Git / Agents</span></div><p>Exécuter des agents en parallèle dans des worktrees Git isolés et comparer leurs changements.</p><a href="https://github.com/johannesjo/parallel-code" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>Shep</h3><span class="type">Orchestration</span></div><p>Orchestrer des agents dans des worktrees isolés, jusqu’au commit et au brouillon de pull request.</p><a href="https://github.com/shep-ai/shep" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>Superagent</h3><span class="type">macOS</span></div><p>Espace de travail desktop pour utiliser Claude Code ou Codex, avec outils navigateur et iOS.</p><a href="https://github.com/pungme/superagent-desktop" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>usage</h3><span class="type">Suivi</span></div><p>Consulter des quotas d’agents de code depuis la barre de menu ou la zone de notification.</p><a href="https://github.com/aqua5230/usage" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops"><div class="card-top"><h3>VDLC</h3><span class="type">Méthode</span></div><p>Cycle de développement qui place l’intention, le contexte et la validation humaine au centre.</p><a href="https://vdlc.roboco.io/" target="_blank" rel="noopener noreferrer">Guide officiel ↗</a></article>
+        </div>
+      </section>
+      <p class="empty" id="empty">Aucun outil ne correspond à cette recherche. Essayez un autre terme ou filtre.</p>
+
+      <section class="section" id="bonnes-pratiques">
+        <div class="section-head"><div><h2>Bien démarrer</h2><p>Un bon workflow compte autant que le choix de l’outil.</p></div></div>
+        <div class="tip">Définissez un petit objectif et des critères d’acceptation, avancez par étapes, inspectez les modifications, lancez les tests et sauvegardez avec Git. Ne partagez jamais de secrets dans les prompts ou les commits. Vérifiez le code généré et les conditions d’hébergement avant de déployer.</div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-head"><div><h2>Sources et date de vérification</h2><p>Deux ressources fournies pour cette page.</p></div></div>
+        <div class="infographic">
+          <a href="https://formations.mehdiguiraud.com/cours/SCAP/VIBE-CODING/images/Vibe-coding.png" target="_blank" rel="noopener noreferrer" aria-label="Ouvrir l’infographie originale sur le vibe coding">
+            <img src="https://formations.mehdiguiraud.com/cours/SCAP/VIBE-CODING/images/Vibe-coding.png" alt="Infographie sur le vibe coding fournie comme première source" loading="lazy">
+          </a>
+          <div>
+            <h3>Infographie Vibe Coding</h3>
+            <p>La première source visuelle, conservée ici en lien vers son image originale.</p>
+            <p><strong>Catalogue principal :</strong> la seconde source est le dépôt <em>awesome-vibecoding</em>, qui propose un catalogue en français et documente les vérifications des outils. La sélection principale indique une revue au 18 septembre 2026, avec des mises à jour mentionnées jusqu’au 4 octobre 2026.</p>
+            <p class="small">Une date de vérification décrit l’offre observée à cette date ; elle ne garantit ni la disponibilité future ni la sécurité d’un produit. Les tarifs et conditions d’accès sont à vérifier sur les sites officiels.</p>
+            <div class="sources">
+              <a href="https://github.com/Scap-Mehdi/awesome-vibecoding/blob/main/README.fr.md" target="_blank" rel="noopener noreferrer">Catalogue français ↗</a>
+              <a href="https://github.com/Scap-Mehdi/awesome-vibecoding" target="_blank" rel="noopener noreferrer">Dépôt source ↗</a>
+              <a href="https://formations.mehdiguiraud.com/cours/SCAP/VIBE-CODING/images/Vibe-coding.png" target="_blank" rel="noopener noreferrer">Infographie originale ↗</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer><div class="wrap">© 2026 Codex Prime · <a href="./">Accueil</a> · Les marques et outils cités appartiennent à leurs propriétaires respectifs.</div></footer>
+  <script>
+    (() => {
+      const search = document.getElementById('search');
+      const buttons = [...document.querySelectorAll('.filter')];
+      const cards = [...document.querySelectorAll('.card[data-category]')];
+      const sections = [...document.querySelectorAll('[data-section]')];
+      const empty = document.getElementById('empty');
+      let active = 'all';
+      function update() {
+        const q = search.value.trim().toLocaleLowerCase('fr');
+        let visible = 0;
+        cards.forEach(card => {
+          const matchesCategory = active === 'all' || card.dataset.category === active;
+          const matchesQuery = !q || card.textContent.toLocaleLowerCase('fr').includes(q);
+          const show = matchesCategory && matchesQuery;
+          card.hidden = !show;
+          if (show) visible++;
+        });
+        sections.forEach(section => {
+          section.hidden = ![...section.querySelectorAll('.card[data-category]')].some(card => !card.hidden);
+        });
+        empty.style.display = visible ? 'none' : 'block';
+      }
+      buttons.forEach(button => button.addEventListener('click', () => {
+        active = button.dataset.filter;
+        buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        update();
+      }));
+      search.addEventListener('input', update);
+    })();
+  </script>
+</body>
+</html>
