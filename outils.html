@@ -26,6 +26,16 @@
     footer{padding:38px 0 48px;text-align:center;color:var(--muted);font-size:.9rem}
     @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.infographic{grid-template-columns:1fr}.infographic img{max-height:520px;object-fit:contain}}
     @media(max-width:560px){.wrap{width:calc(100% - 26px)}.hero{padding-top:48px}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.navlinks .pill-link:first-child{display:none}.card{min-height:unset}.toolbar{position:static}}
+  
+    .site-footer{margin-top:48px;padding:28px 0 38px;border-top:1px solid var(--border);color:var(--muted);font-size:.9rem;text-align:left}
+    .footer-inner{width:min(1100px,calc(100% - 40px));margin:0 auto}
+    .footer-brand{margin:0 0 14px}
+    .footer-nav{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+    .footer-nav a{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+    .footer-nav a:hover{color:var(--accent-2)}
+    .footer-status{color:var(--muted)}
+    @media(max-width:760px){.footer-inner{width:min(100% - 28px,1100px)}.footer-nav{flex-direction:column;align-items:flex-start;gap:10px}}
+
   </style>
 </head>
 <body>
@@ -172,7 +182,20 @@
       </section>
     </div>
   </main>
-  <footer><div class="wrap">© 2026 Codex Prime · <a href="./">Accueil</a> · Les marques et outils cités appartiennent à leurs propriétaires respectifs.</div></footer>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-brand">© 2026 Codex Prime · BENORG</p>
+    <nav class="footer-nav" aria-label="Pied de page">
+      <a href="contact.html">Contact</a>
+      <a href="aide.html">Aide</a>
+      <a href="info-site.html">Info site</a>
+      <span class="footer-status">Accessibilité : non conforme</span>
+      <a href="info-site.html#organisme">Site de BENORG</a>
+      <a href="donnees-personnelles.html">Cookies / Données personnelles</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+    </nav>
+  </div>
+</footer>
   <script>
     (() => {
       const search = document.getElementById('search');
