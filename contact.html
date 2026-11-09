@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Contacter l'équipe de Codex Prime.">
+  <meta name="theme-color" content="#070b16">
+  <title>Contact — Codex Prime</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070b16;--panel:rgba(18,26,48,.76);--text:#f5f7ff;--muted:#aab4cf;--accent:#a78bfa;--cyan:#22d3ee;--border:rgba(255,255,255,.11)}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:radial-gradient(circle at 10% 8%,rgba(139,92,246,.2),transparent 32rem),var(--bg);line-height:1.65}
+    a{color:inherit}.wrap{width:min(900px,calc(100% - 36px));margin:auto}
+    header nav{padding:22px 0}header nav a{text-decoration:none;font-weight:800;letter-spacing:.07em}
+    main{padding:48px 0 30px}h1{font-size:clamp(2.3rem,6vw,4rem);letter-spacing:-.05em;line-height:1.05;margin:0 0 12px}
+    .intro{color:var(--muted);margin:0 0 26px}.panel{padding:clamp(20px,4vw,34px);border:1px solid var(--border);border-radius:20px;background:var(--panel)}
+    form{display:grid;gap:17px}label{display:block;font-weight:650;margin-bottom:7px}
+    input,textarea{width:100%;padding:12px 14px;border:1px solid #59627a;border-radius:10px;background:#0b1223;color:var(--text);font:inherit}
+    input:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    textarea{min-height:170px;resize:vertical}button{justify-self:start;padding:12px 20px;border:0;border-radius:10px;background:linear-gradient(100deg,#7c3aed,#4f46e5);color:white;font:inherit;font-weight:750;cursor:pointer}
+    button:disabled{opacity:.65;cursor:wait}.privacy-note{margin:0;color:var(--muted);font-size:.94rem}.privacy-note a{color:#a5f3fc}
+    #form-status{min-height:1.5em;margin:0;font-weight:650}#form-status[data-state="error"]{color:#fca5a5}#form-status[data-state="success"]{color:#86efac}
+    .site-footer{margin-top:48px;padding:28px 0 38px;border-top:1px solid var(--border);color:var(--muted);font-size:.9rem}
+    .footer-inner{width:min(900px,calc(100% - 36px));margin:auto}.footer-brand{margin:0 0 14px}
+    .footer-nav{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}.footer-nav a{color:var(--text);text-decoration:underline;text-underline-offset:3px}.footer-status{color:var(--muted)}
+    @media(max-width:600px){.footer-nav{flex-direction:column;align-items:flex-start;gap:10px}}
+  </style>
+</head>
+<body>
+  <header class="wrap"><nav aria-label="Navigation principale"><a href="index.html">CODEX PRIME</a></nav></header>
+  <main class="wrap">
+    <h1>Contact</h1>
+    <p class="intro">Utilisez ce formulaire pour envoyer votre message.</p>
+    <section class="panel" aria-labelledby="contact-title">
+      <h2 id="contact-title">Écrire un message</h2>
+      <form id="contact-form" action="/contact" method="post">
+        <div><label for="email">Votre adresse électronique</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div><label for="subject">Sujet</label><input id="subject" name="subject" type="text" maxlength="160" required></div>
+        <div><label for="message">Message</label><textarea id="message" name="message" maxlength="10000" required></textarea></div>
+        <button id="submit-button" type="submit">Envoyer le message</button>
+        <p class="privacy-note">Les informations saisies sont utilisées pour traiter votre demande. Consultez la page <a href="donnees-personnelles.html">Cookies / Données personnelles</a> pour en savoir plus.</p>
+        <p id="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
+      </form>
+    </section>
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-brand">© 2026 Codex Prime · BENORG</p>
+    <nav class="footer-nav" aria-label="Pied de page">
+      <a href="contact.html">Contact</a>
+      <a href="aide.html">Aide</a>
+      <a href="info-site.html">Info site</a>
+      <span class="footer-status">Accessibilité : non conforme</span>
+      <a href="info-site.html#organisme">Site de BENORG</a>
+      <a href="donnees-personnelles.html">Cookies / Données personnelles</a>
+      <a href="mentions-legales.html">Mentions légales</a>
+    </nav>
+  </div>
+</footer>
+  <script>
+    (() => {
+      const form = document.getElementById('contact-form');
+      const status = document.getElementById('form-status');
+      const button = document.getElementById('submit-button');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        status.textContent = '';
+        status.removeAttribute('data-state');
+        button.disabled = true;
+        try {
+          const payload = {
+            email: form.elements.email.value.trim(),
+            subject: form.elements.subject.value.trim(),
+            message: form.elements.message.value.trim()
+          };
+          const response = await fetch('/contact', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify(payload)
+          });
+          if (response.status === 201) {
+            status.textContent = 'Message envoyé';
+            status.dataset.state = 'success';
+            form.reset();
+          } else {
+            const details = (await response.text()).trim();
+            status.textContent = details || ('Erreur : le message n’a pas été envoyé (réponse HTTP ' + response.status + ').');
+            status.dataset.state = 'error';
+          }
+        } catch (error) {
+          status.textContent = 'Erreur : impossible de joindre le service de contact. Veuillez réessayer plus tard.';
+          status.dataset.state = 'error';
+        } finally {
+          button.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
