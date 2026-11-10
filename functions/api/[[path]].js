@@ -265,7 +265,7 @@ async function addComment(request, env, toolId) {
     commentId: crypto.randomUUID(),
     toolId,
     text,
-    author: editor.email,
+    author: "Équipe Codex Prime",
     createdAt: new Date().toISOString()
   };
   await bucket.put("comments/" + toolId + "/" + comment.commentId + ".json", JSON.stringify(comment), {
