@@ -6,7 +6,6 @@ Le site reste un site HTML statique. `index.html`, `README.md`, les 43 cartes, l
 
 - `outils.html` : interface d’édition, identifiants techniques fixes et affichage des commentaires.
 - `functions/api/[[path]].js` : Cloudflare Pages Function (runtime Worker) pour lire/écrire les fiches et commentaires.
-- `wrangler.toml` : liaison déclarative au bucket R2 `codex-prime-tools`.
 - `tests/worker.test.js` et `tests/catalog.test.js` : tests API, persistance, sécurité et structure du catalogue.
 - `.github/workflows/catalog-tests.yml` : tests sur `feat/pied-de-page` et les pull requests vers `main`. Ce workflow ne publie pas le site.
 
@@ -25,7 +24,7 @@ Les modifications utilisent l’ETag R2 dans `If-Match` et une écriture conditi
 ## Réglages Cloudflare à effectuer
 
 1. Créer un bucket R2 nommé exactement `codex-prime-tools`.
-2. Dans Cloudflare Pages > projet `codex-prime` > Settings > Functions, lier le bucket avec le binding `TOOLS_R2`. Le fichier `wrangler.toml` décrit également ce binding ; vérifier qu’il apparaît dans l’environnement Preview utilisé.
+2. Dans Cloudflare Pages > projet `codex-prime` > Settings > Bindings > Add > R2 bucket, lier le bucket avec le binding `TOOLS_R2`. Répéter pour Preview et Production si les deux environnements doivent utiliser R2, puis redéployer. Aucun fichier Wrangler n’est imposé ici afin de ne pas remplacer les réglages existants du projet Pages.
 3. Créer une application Cloudflare Access protégeant les chemins d’API d’écriture :
    - `/api/tools/*`
    - `/api/admin/*`
