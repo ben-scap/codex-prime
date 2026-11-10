@@ -13,7 +13,7 @@ function json(data, status = 200, headers = {}) {
 }
 
 function configured(env) {
-  return Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD && env.EDITOR_EMAILS);
+  return env.ACCESS_ENABLED === "true" && Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD && env.EDITOR_EMAILS);
 }
 
 function issuerFor(env) {
