@@ -9,7 +9,7 @@ test("outils.html garde un rendu textuel sûr et les contrôles d’édition", a
   assert.match(html, /Ajouter un commentaire/);
   assert.match(html, /textContent/);
   assert.doesNotMatch(html, /\.innerHTML\s*=/);
-  assert.match(html, /\/api\/tools/);
+  assert.match(html, /\/api\/catalog/);
 });
 
 test("le catalogue statique conserve ses 43 fiches et ses six catégories", async () => {
