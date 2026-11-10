@@ -2,6 +2,7 @@ const CATEGORIES = new Set(["app", "code", "context", "quality", "delivery", "op
 const MAX_BODY_BYTES = 32_768;
 const MAX_COMMENT_LENGTH = 2_000;
 const RESERVED_KEYS = new Set(["__proto__", "prototype", "constructor"]);
+const RESERVED_TOOL_FIELDS = new Set(["_version", "comments"]);
 let cachedJwks = null;
 let cachedJwksAt = 0;
 
@@ -112,7 +113,7 @@ function validateTool(input, expectedId) {
   if (tool.toolId !== expectedId || !/^tool-[a-z0-9-]{1,80}$/.test(tool.toolId)) throw new Error("Identifiant technique invalide.");
   if (Object.keys(tool).length > 60) throw new Error("La fiche contient trop de champs.");
   for (const [key, value] of Object.entries(tool)) {
-    if (RESERVED_KEYS.has(key) || key.length > 80) throw new Error("Nom de champ invalide.");
+    if (RESERVED_KEYS.has(key) || RESERVED_TOOL_FIELDS.has(key) || key.length > 80) throw new Error("Nom de champ réservé ou invalide.");
     validateJsonValue(value);
   }
   const requiredStrings = [
