@@ -36,6 +36,35 @@
     .footer-status{color:var(--muted)}
     @media(max-width:760px){.footer-inner{width:min(100% - 28px,1100px)}.footer-nav{flex-direction:column;align-items:flex-start;gap:10px}}
 
+
+    #catalogue-status{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0;color:var(--muted);font-size:.9rem}
+    .catalogue-status-text{margin:0}
+    .catalogue-status-text[data-error="true"]{color:#fca5a5}
+    .catalogue-action{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .catalogue-action button,.comment-form button,.editor-dialog button{border:1px solid var(--border);border-radius:9px;padding:8px 11px;background:#ffffff0a;color:var(--text);font:inherit;font-size:.85rem;cursor:pointer}
+    .catalogue-action button:disabled,.comment-form button:disabled,.editor-dialog button:disabled{opacity:.45;cursor:not-allowed}
+    .catalogue-action button:hover:not(:disabled),.comment-form button:hover:not(:disabled),.editor-dialog button:hover:not(:disabled){border-color:var(--accent);background:#a78bfa18}
+    .comment-list{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.88rem}
+    .comment-item{padding:8px 0;border-bottom:1px solid #ffffff12;overflow-wrap:anywhere}
+    .comment-meta{display:block;color:var(--muted);font-size:.78rem;margin-bottom:3px}
+    .comment-text{white-space:pre-wrap}
+    .comment-form{display:grid;gap:8px;margin-top:10px}
+    .comment-form textarea,.editor-dialog input,.editor-dialog textarea,.editor-dialog select{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:9px;background:#10172a;color:var(--text);font:inherit}
+    .comment-form textarea{min-height:82px;resize:vertical}
+    .editor-dialog{width:min(760px,calc(100% - 24px));max-height:88vh;overflow:auto;padding:22px;border:1px solid var(--border);border-radius:18px;background:#0b1020;color:var(--text)}
+    .editor-dialog::backdrop{background:#020617cc;backdrop-filter:blur(4px)}
+    .editor-dialog h2{margin:0 0 8px}
+    .editor-help{color:var(--muted);font-size:.88rem}
+    .editor-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+    .editor-field{display:grid;gap:5px;min-width:0}
+    .editor-field.wide{grid-column:1/-1}
+    .editor-field label{font-size:.88rem;color:var(--muted)}
+    .editor-field input[type=checkbox]{width:auto;justify-self:start}
+    .editor-field textarea{min-height:76px;resize:vertical}
+    .editor-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .editor-message{min-height:1.4em;color:#fca5a5;font-size:.9rem}
+    @media(max-width:560px){.editor-fields{grid-template-columns:1fr}.editor-field.wide{grid-column:auto}#catalogue-status{align-items:flex-start;flex-direction:column}}
+
   </style>
 </head>
 <body>
@@ -75,83 +104,87 @@
       </div>
     </section>
 
+    <div class="wrap" id="catalogue-status" role="status" aria-live="polite">
+      <p class="catalogue-status-text" id="api-status">Chargement des fiches sauvegardées…</p>
+      <button class="btn" id="initialize-catalogue" type="button" disabled>Initialiser les 43 fiches dans R2</button>
+    </div>
     <div class="wrap" id="catalogue">
       <section class="section" data-section="app">
         <div class="section-head"><div><h2>01 · Créer une application ou une interface</h2><p>Partir d’une idée, d’un prompt ou d’un design pour produire un prototype.</p></div><span class="count">6 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="app"><div class="card-top"><h3>Bolt.new</h3><span class="type">Web</span></div><p>Générer et faire évoluer une application à partir d’instructions en langage naturel.</p><a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Dyad</h3><span class="type">Desktop</span></div><p>Créer des applications en local avec des fournisseurs de modèles configurables.</p><a href="https://github.com/dyad-sh/dyad" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Lovable</h3><span class="type">Web</span></div><p>Construire des applications full-stack, notamment avec une intégration Supabase.</p><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Onlook</h3><span class="type">Visuel</span></div><p>Modifier visuellement une interface tout en travaillant sur le code de l’application.</p><a href="https://www.onlook.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Replit Agent</h3><span class="type">Web</span></div><p>Créer et itérer sur des applications dans l’environnement Replit.</p><a href="https://replit.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>v0</h3><span class="type">UI / React</span></div><p>Générer des interfaces et du code React avec l’IA de Vercel.</p><a href="https://v0.app/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="tool-bolt-new"><div class="card-top"><h3>Bolt.new</h3><span class="type">Web</span></div><p>Générer et faire évoluer une application à partir d’instructions en langage naturel.</p><a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="tool-dyad"><div class="card-top"><h3>Dyad</h3><span class="type">Desktop</span></div><p>Créer des applications en local avec des fournisseurs de modèles configurables.</p><a href="https://github.com/dyad-sh/dyad" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="tool-lovable"><div class="card-top"><h3>Lovable</h3><span class="type">Web</span></div><p>Construire des applications full-stack, notamment avec une intégration Supabase.</p><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="tool-onlook"><div class="card-top"><h3>Onlook</h3><span class="type">Visuel</span></div><p>Modifier visuellement une interface tout en travaillant sur le code de l’application.</p><a href="https://www.onlook.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="tool-replit-agent"><div class="card-top"><h3>Replit Agent</h3><span class="type">Web</span></div><p>Créer et itérer sur des applications dans l’environnement Replit.</p><a href="https://replit.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="tool-v0"><div class="card-top"><h3>v0</h3><span class="type">UI / React</span></div><p>Générer des interfaces et du code React avec l’IA de Vercel.</p><a href="https://v0.app/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
         </div>
       </section>
 
       <section class="section" data-section="code">
         <div class="section-head"><div><h2>02 · Écrire, comprendre et refactorer le code</h2><p>Assistants de programmation, agents et environnements de développement.</p></div><span class="count">10 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="code"><div class="card-top"><h3>Aider</h3><span class="type">CLI · Open source</span></div><p>Pair programming dans le terminal avec des modèles cloud ou locaux et intégration Git.</p><a href="https://github.com/Aider-AI/aider" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Claude Code</h3><span class="type">Agent CLI</span></div><p>Agent de code pour travailler dans un dépôt et exécuter des workflows de développement.</p><a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Cline</h3><span class="type">Agent</span></div><p>Agent pour IDE, terminal et desktop, avec outils pour les fichiers, commandes et navigateur.</p><a href="https://github.com/cline/cline" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Cursor</h3><span class="type">IDE</span></div><p>Éditeur de code orienté IA pour implémenter, déboguer et revoir du code.</p><a href="https://www.cursor.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>GitHub Copilot</h3><span class="type">Assistant</span></div><p>Assistance à la programmation et workflows d’agents dans GitHub et les IDE compatibles.</p><a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Goose</h3><span class="type">CLI / Desktop</span></div><p>Agent extensible avec interfaces terminal et desktop, et intégrations MCP.</p><a href="https://github.com/aaif-goose/goose" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Kiro</h3><span class="type">IDE / CLI</span></div><p>Agent de développement AWS avec spécifications et tests intégrés au workflow.</p><a href="https://kiro.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>OpenAI Codex</h3><span class="type">Agent</span></div><p>Agent de programmation pour aider à comprendre, modifier et vérifier un projet.</p><a href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Pi</h3><span class="type">CLI · MIT</span></div><p>Agent de code en terminal, extensible, avec prise en charge de plusieurs fournisseurs.</p><a href="https://github.com/earendil-works/pi" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Warp Terminal</h3><span class="type">Terminal</span></div><p>Terminal moderne conçu pour les workflows de développement assistés par agents.</p><a href="https://www.warp.dev/terminal" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-aider"><div class="card-top"><h3>Aider</h3><span class="type">CLI · Open source</span></div><p>Pair programming dans le terminal avec des modèles cloud ou locaux et intégration Git.</p><a href="https://github.com/Aider-AI/aider" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-claude-code"><div class="card-top"><h3>Claude Code</h3><span class="type">Agent CLI</span></div><p>Agent de code pour travailler dans un dépôt et exécuter des workflows de développement.</p><a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-cline"><div class="card-top"><h3>Cline</h3><span class="type">Agent</span></div><p>Agent pour IDE, terminal et desktop, avec outils pour les fichiers, commandes et navigateur.</p><a href="https://github.com/cline/cline" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-cursor"><div class="card-top"><h3>Cursor</h3><span class="type">IDE</span></div><p>Éditeur de code orienté IA pour implémenter, déboguer et revoir du code.</p><a href="https://www.cursor.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-github-copilot"><div class="card-top"><h3>GitHub Copilot</h3><span class="type">Assistant</span></div><p>Assistance à la programmation et workflows d’agents dans GitHub et les IDE compatibles.</p><a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-goose"><div class="card-top"><h3>Goose</h3><span class="type">CLI / Desktop</span></div><p>Agent extensible avec interfaces terminal et desktop, et intégrations MCP.</p><a href="https://github.com/aaif-goose/goose" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-kiro"><div class="card-top"><h3>Kiro</h3><span class="type">IDE / CLI</span></div><p>Agent de développement AWS avec spécifications et tests intégrés au workflow.</p><a href="https://kiro.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-openai-codex"><div class="card-top"><h3>OpenAI Codex</h3><span class="type">Agent</span></div><p>Agent de programmation pour aider à comprendre, modifier et vérifier un projet.</p><a href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-pi"><div class="card-top"><h3>Pi</h3><span class="type">CLI · MIT</span></div><p>Agent de code en terminal, extensible, avec prise en charge de plusieurs fournisseurs.</p><a href="https://github.com/earendil-works/pi" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="tool-warp-terminal"><div class="card-top"><h3>Warp Terminal</h3><span class="type">Terminal</span></div><p>Terminal moderne conçu pour les workflows de développement assistés par agents.</p><a href="https://www.warp.dev/terminal" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
         </div>
       </section>
 
       <section class="section" data-section="context">
         <div class="section-head"><div><h2>03 · Ajouter du contexte et connecter les outils</h2><p>Donner aux agents accès aux règles du projet, à la documentation et aux services.</p></div><span class="count">8 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="context"><div class="card-top"><h3>Caliber</h3><span class="type">Configuration</span></div><p>Générer et synchroniser des configurations d’agents IA pour plusieurs environnements.</p><a href="https://github.com/caliber-ai-org/ai-setup" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Context7</h3><span class="type">MCP</span></div><p>Fournir aux assistants la documentation à jour des bibliothèques et frameworks.</p><a href="https://github.com/upstash/context7" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Filesystem MCP</h3><span class="type">MCP</span></div><p>Permettre aux agents d’accéder aux fichiers d’un projet selon des chemins autorisés.</p><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>GitHub MCP</h3><span class="type">MCP</span></div><p>Connecter un agent aux dépôts, issues et pull requests GitHub.</p><a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Neon MCP</h3><span class="type">MCP / Base de données</span></div><p>Connecter les workflows IA aux bases de données Neon.</p><a href="https://github.com/neondatabase/mcp-server-neon" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Notion MCP</h3><span class="type">MCP</span></div><p>Rechercher, lire et mettre à jour du contenu Notion depuis un agent compatible.</p><a href="https://developers.notion.com/guides/mcp/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>OpenSpec</h3><span class="type">Spécifications</span></div><p>Structurer le développement avec des spécifications adaptées aux assistants IA.</p><a href="https://github.com/Fission-AI/OpenSpec" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Supabase MCP</h3><span class="type">MCP / Backend</span></div><p>Connecter des agents aux schémas, requêtes et configurations Supabase.</p><a href="https://github.com/supabase/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-caliber"><div class="card-top"><h3>Caliber</h3><span class="type">Configuration</span></div><p>Générer et synchroniser des configurations d’agents IA pour plusieurs environnements.</p><a href="https://github.com/caliber-ai-org/ai-setup" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-context7"><div class="card-top"><h3>Context7</h3><span class="type">MCP</span></div><p>Fournir aux assistants la documentation à jour des bibliothèques et frameworks.</p><a href="https://github.com/upstash/context7" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-filesystem-mcp"><div class="card-top"><h3>Filesystem MCP</h3><span class="type">MCP</span></div><p>Permettre aux agents d’accéder aux fichiers d’un projet selon des chemins autorisés.</p><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-github-mcp"><div class="card-top"><h3>GitHub MCP</h3><span class="type">MCP</span></div><p>Connecter un agent aux dépôts, issues et pull requests GitHub.</p><a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-neon-mcp"><div class="card-top"><h3>Neon MCP</h3><span class="type">MCP / Base de données</span></div><p>Connecter les workflows IA aux bases de données Neon.</p><a href="https://github.com/neondatabase/mcp-server-neon" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-notion-mcp"><div class="card-top"><h3>Notion MCP</h3><span class="type">MCP</span></div><p>Rechercher, lire et mettre à jour du contenu Notion depuis un agent compatible.</p><a href="https://developers.notion.com/guides/mcp/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-openspec"><div class="card-top"><h3>OpenSpec</h3><span class="type">Spécifications</span></div><p>Structurer le développement avec des spécifications adaptées aux assistants IA.</p><a href="https://github.com/Fission-AI/OpenSpec" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="tool-supabase-mcp"><div class="card-top"><h3>Supabase MCP</h3><span class="type">MCP / Backend</span></div><p>Connecter des agents aux schémas, requêtes et configurations Supabase.</p><a href="https://github.com/supabase/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
         </div>
       </section>
 
       <section class="section" data-section="quality">
         <div class="section-head"><div><h2>04 · Tester, relire et sécuriser</h2><p>Vérifier le résultat généré avant de le partager ou de le déployer.</p></div><span class="count">7 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="quality"><div class="card-top"><h3>Agent QA</h3><span class="type">Tests</span></div><p>Créer et exécuter des workflows de tests web et mobile en langage naturel.</p><a href="https://github.com/vostride/agent-qa" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Playwright MCP</h3><span class="type">Navigateur</span></div><p>Automatiser le navigateur avec l’implémentation MCP maintenue par Microsoft.</p><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>PR-Agent</h3><span class="type">Revue de code</span></div><p>Obtenir de l’aide pour relire des pull requests et repérer les changements à examiner.</p><a href="https://github.com/The-PR-Agent/pr-agent" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Prbl</h3><span class="type">Sécurité</span></div><p>Scanner une application ou un dépôt pour rechercher des vulnérabilités fréquentes du code généré.</p><a href="https://getprbl.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Qodo</h3><span class="type">Qualité du code</span></div><p>Outils IA pour la revue de code et l’amélioration de la qualité logicielle.</p><a href="https://www.qodo.ai/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Semgrep MCP</h3><span class="type">Sécurité</span></div><p>Connecter les contrôles d’analyse de sécurité Semgrep aux workflows MCP.</p><a href="https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Sentry MCP</h3><span class="type">Diagnostic</span></div><p>Inspecter les erreurs d’application et aider à diagnostiquer les échecs.</p><a href="https://github.com/getsentry/sentry-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-agent-qa"><div class="card-top"><h3>Agent QA</h3><span class="type">Tests</span></div><p>Créer et exécuter des workflows de tests web et mobile en langage naturel.</p><a href="https://github.com/vostride/agent-qa" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-playwright-mcp"><div class="card-top"><h3>Playwright MCP</h3><span class="type">Navigateur</span></div><p>Automatiser le navigateur avec l’implémentation MCP maintenue par Microsoft.</p><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-pr-agent"><div class="card-top"><h3>PR-Agent</h3><span class="type">Revue de code</span></div><p>Obtenir de l’aide pour relire des pull requests et repérer les changements à examiner.</p><a href="https://github.com/The-PR-Agent/pr-agent" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-prbl"><div class="card-top"><h3>Prbl</h3><span class="type">Sécurité</span></div><p>Scanner une application ou un dépôt pour rechercher des vulnérabilités fréquentes du code généré.</p><a href="https://getprbl.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-qodo"><div class="card-top"><h3>Qodo</h3><span class="type">Qualité du code</span></div><p>Outils IA pour la revue de code et l’amélioration de la qualité logicielle.</p><a href="https://www.qodo.ai/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-semgrep-mcp"><div class="card-top"><h3>Semgrep MCP</h3><span class="type">Sécurité</span></div><p>Connecter les contrôles d’analyse de sécurité Semgrep aux workflows MCP.</p><a href="https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="tool-sentry-mcp"><div class="card-top"><h3>Sentry MCP</h3><span class="type">Diagnostic</span></div><p>Inspecter les erreurs d’application et aider à diagnostiquer les échecs.</p><a href="https://github.com/getsentry/sentry-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
         </div>
       </section>
 
       <section class="section" data-section="delivery">
         <div class="section-head"><div><h2>05 · Déployer et exécuter</h2><p>Publier le projet ou fournir un environnement d’exécution adapté.</p></div><span class="count">4 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="delivery"><div class="card-top"><h3>Cloudflare MCP</h3><span class="type">Cloud</span></div><p>Connecter des workflows agentiques aux services et ressources Cloudflare.</p><a href="https://github.com/cloudflare/mcp-server-cloudflare" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="delivery"><div class="card-top"><h3>E2B</h3><span class="type">Sandbox</span></div><p>Fournir des environnements isolés pour exécuter du code généré par des agents IA.</p><a href="https://github.com/e2b-dev/E2B" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="delivery"><div class="card-top"><h3>Publish.my</h3><span class="type">Publication</span></div><p>Publier des sites statiques avec un workflow orienté agents.</p><a href="https://publish.my/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="delivery"><div class="card-top"><h3>XcodeBuildMCP</h3><span class="type">Apple</span></div><p>Compiler, exécuter et déboguer des projets Apple avec des outils CLI et MCP.</p><a href="https://github.com/getsentry/XcodeBuildMCP" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="delivery" data-tool-id="tool-cloudflare-mcp"><div class="card-top"><h3>Cloudflare MCP</h3><span class="type">Cloud</span></div><p>Connecter des workflows agentiques aux services et ressources Cloudflare.</p><a href="https://github.com/cloudflare/mcp-server-cloudflare" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="delivery" data-tool-id="tool-e2b"><div class="card-top"><h3>E2B</h3><span class="type">Sandbox</span></div><p>Fournir des environnements isolés pour exécuter du code généré par des agents IA.</p><a href="https://github.com/e2b-dev/E2B" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="delivery" data-tool-id="tool-publish-my"><div class="card-top"><h3>Publish.my</h3><span class="type">Publication</span></div><p>Publier des sites statiques avec un workflow orienté agents.</p><a href="https://publish.my/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="delivery" data-tool-id="tool-xcodebuildmcp"><div class="card-top"><h3>XcodeBuildMCP</h3><span class="type">Apple</span></div><p>Compiler, exécuter et déboguer des projets Apple avec des outils CLI et MCP.</p><a href="https://github.com/getsentry/XcodeBuildMCP" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
         </div>
       </section>
 
       <section class="section" data-section="ops">
         <div class="section-head"><div><h2>06 · Orchestrer les agents et les sessions</h2><p>Gérer le travail en parallèle, les espaces de travail et l’usage des modèles.</p></div><span class="count">8 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="ops"><div class="card-top"><h3>Delta (Zed)</h3><span class="type">Collaboration</span></div><p>Espace de travail multijoueur pour agents de code et revue des changements.</p><a href="https://delta.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Duckweed</h3><span class="type">Desktop</span></div><p>Gérer localement des agents, shells, diffs Git et sessions de développement.</p><a href="https://github.com/MusicMaster4/Duckweed" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>llm.log</h3><span class="type">Observabilité</span></div><p>Inspecter les coûts, tokens et traces de requêtes de modèles via un proxy local.</p><a href="https://github.com/lanesket/llm.log" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Parallel Code</h3><span class="type">Git / Agents</span></div><p>Exécuter des agents en parallèle dans des worktrees Git isolés et comparer leurs changements.</p><a href="https://github.com/johannesjo/parallel-code" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Shep</h3><span class="type">Orchestration</span></div><p>Orchestrer des agents dans des worktrees isolés, jusqu’au commit et au brouillon de pull request.</p><a href="https://github.com/shep-ai/shep" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Superagent</h3><span class="type">macOS</span></div><p>Espace de travail desktop pour utiliser Claude Code ou Codex, avec outils navigateur et iOS.</p><a href="https://github.com/pungme/superagent-desktop" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>usage</h3><span class="type">Suivi</span></div><p>Consulter des quotas d’agents de code depuis la barre de menu ou la zone de notification.</p><a href="https://github.com/aqua5230/usage" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>VDLC</h3><span class="type">Méthode</span></div><p>Cycle de développement qui place l’intention, le contexte et la validation humaine au centre.</p><a href="https://vdlc.roboco.io/" target="_blank" rel="noopener noreferrer">Guide officiel ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-delta-zed"><div class="card-top"><h3>Delta (Zed)</h3><span class="type">Collaboration</span></div><p>Espace de travail multijoueur pour agents de code et revue des changements.</p><a href="https://delta.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-duckweed"><div class="card-top"><h3>Duckweed</h3><span class="type">Desktop</span></div><p>Gérer localement des agents, shells, diffs Git et sessions de développement.</p><a href="https://github.com/MusicMaster4/Duckweed" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-llm-log"><div class="card-top"><h3>llm.log</h3><span class="type">Observabilité</span></div><p>Inspecter les coûts, tokens et traces de requêtes de modèles via un proxy local.</p><a href="https://github.com/lanesket/llm.log" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-parallel-code"><div class="card-top"><h3>Parallel Code</h3><span class="type">Git / Agents</span></div><p>Exécuter des agents en parallèle dans des worktrees Git isolés et comparer leurs changements.</p><a href="https://github.com/johannesjo/parallel-code" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-shep"><div class="card-top"><h3>Shep</h3><span class="type">Orchestration</span></div><p>Orchestrer des agents dans des worktrees isolés, jusqu’au commit et au brouillon de pull request.</p><a href="https://github.com/shep-ai/shep" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-superagent"><div class="card-top"><h3>Superagent</h3><span class="type">macOS</span></div><p>Espace de travail desktop pour utiliser Claude Code ou Codex, avec outils navigateur et iOS.</p><a href="https://github.com/pungme/superagent-desktop" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-usage"><div class="card-top"><h3>usage</h3><span class="type">Suivi</span></div><p>Consulter des quotas d’agents de code depuis la barre de menu ou la zone de notification.</p><a href="https://github.com/aqua5230/usage" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="tool-vdlc"><div class="card-top"><h3>VDLC</h3><span class="type">Méthode</span></div><p>Cycle de développement qui place l’intention, le contexte et la validation humaine au centre.</p><a href="https://vdlc.roboco.io/" target="_blank" rel="noopener noreferrer">Guide officiel ↗</a></article>
         </div>
       </section>
       <p class="empty" id="empty">Aucun outil ne correspond à cette recherche. Essayez un autre terme ou filtre.</p>
@@ -200,31 +233,390 @@
     (() => {
       const search = document.getElementById('search');
       const buttons = [...document.querySelectorAll('.filter')];
-      const cards = [...document.querySelectorAll('.card[data-category]')];
-      const sections = [...document.querySelectorAll('[data-section]')];
+      const cards = [...document.querySelectorAll('.card[data-category][data-tool-id]')];
       const empty = document.getElementById('empty');
+      const statusNode = document.getElementById('api-status');
+      const initializeButton = document.getElementById('initialize-catalogue');
+      const API = '/api/tools';
       let active = 'all';
-      function update() {
-        const q = search.value.trim().toLocaleLowerCase('fr');
+      let canEdit = false;
+      const records = new Map();
+      const seedCatalog = cards.map((card, index) => {
+        const link = card.querySelector('a');
+        const section = card.closest('[data-section]');
+        return {
+          toolId: card.dataset.toolId,
+          name: card.querySelector('h3')?.textContent.trim() || '',
+          type: card.querySelector('.type')?.textContent.trim() || '',
+          description: card.querySelector('p')?.textContent.trim() || '',
+          category: card.dataset.category,
+          url: link?.getAttribute('href') || '',
+          linkLabel: link?.textContent.trim() || '',
+          linkTarget: link?.getAttribute('target') || '_self',
+          linkRel: link?.getAttribute('rel') || '',
+          sortOrder: index + 1
+        };
+      });
+
+      function status(message, isError = false) {
+        statusNode.textContent = message;
+        statusNode.dataset.error = String(isError);
+      }
+      function makeButton(label, action) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.disabled = !canEdit;
+        button.addEventListener('click', action);
+        return button;
+      }
+      function safeUrl(value) {
+        try {
+          const parsed = new URL(value);
+          return ['http:', 'https:'].includes(parsed.protocol) && !parsed.username && !parsed.password;
+        } catch { return false; }
+      }
+      function ensureCardUi(card) {
+        let actions = card.querySelector('.catalogue-action');
+        if (!actions) {
+          actions = document.createElement('div');
+          actions.className = 'catalogue-action';
+          const edit = makeButton('Modifier la fiche', () => openEditor(records.get(card.dataset.toolId), card));
+          const comment = makeButton('Ajouter un commentaire', () => toggleCommentForm(card));
+          actions.append(edit, comment);
+          card.append(actions);
+        }
+        let comments = card.querySelector('.comment-list');
+        if (!comments) {
+          comments = document.createElement('div');
+          comments.className = 'comment-list';
+          comments.setAttribute('aria-label', 'Commentaires');
+          card.append(comments);
+        }
+        return { actions, comments };
+      }
+      function renderComments(card, comments = []) {
+        const area = ensureCardUi(card).comments;
+        area.replaceChildren();
+        const heading = document.createElement('strong');
+        heading.textContent = 'Commentaires (' + comments.length + ')';
+        area.append(heading);
+        if (!comments.length) {
+          const emptyText = document.createElement('p');
+          emptyText.className = 'small';
+          emptyText.textContent = 'Aucun commentaire pour le moment.';
+          area.append(emptyText);
+          return;
+        }
+        comments.forEach(comment => {
+          const item = document.createElement('div');
+          item.className = 'comment-item';
+          const meta = document.createElement('span');
+          meta.className = 'comment-meta';
+          const date = new Date(comment.createdAt);
+          meta.textContent = (comment.author || 'Utilisateur') + ' · ' + (Number.isNaN(date.getTime()) ? '' : date.toLocaleString('fr-FR'));
+          const body = document.createElement('div');
+          body.className = 'comment-text';
+          body.textContent = String(comment.text || '');
+          item.append(meta, body);
+          area.append(item);
+        });
+      }
+      function moveCard(card, data) {
+        const targetSection = document.querySelector('[data-section="' + data.category + '"]');
+        const targetGrid = targetSection?.querySelector('.grid');
+        if (targetGrid && card.parentElement !== targetGrid) targetGrid.append(card);
+        card.dataset.category = data.category;
+        card.dataset.sortOrder = String(data.sortOrder);
+        if (targetGrid) {
+          [...targetGrid.querySelectorAll('.card[data-tool-id]')]
+            .sort((a, b) => Number(a.dataset.sortOrder || 0) - Number(b.dataset.sortOrder || 0))
+            .forEach(item => targetGrid.append(item));
+        }
+        document.querySelectorAll('[data-section]').forEach(section => {
+          const count = section.querySelector('.count');
+          if (count) count.textContent = section.querySelectorAll('.card[data-tool-id]').length + ' outils';
+        });
+      }
+      function applyRecord(card, data) {
+        card.querySelector('h3').textContent = String(data.name);
+        card.querySelector('.type').textContent = String(data.type);
+        card.querySelector('p').textContent = String(data.description);
+        const link = card.querySelector('a');
+        if (safeUrl(data.url)) link.href = data.url;
+        link.textContent = String(data.linkLabel);
+        link.target = data.linkTarget;
+        link.rel = data.linkRel;
+        moveCard(card, data);
+        renderComments(card, data.comments || []);
+        const editButton = card.querySelector('.catalogue-action button:first-child');
+        const commentButton = card.querySelector('.catalogue-action button:last-child');
+        if (editButton) editButton.disabled = !canEdit;
+        if (commentButton) commentButton.disabled = !canEdit;
+      }
+      function filterCards() {
+        const query = search.value.trim().toLocaleLowerCase('fr');
         let visible = 0;
         cards.forEach(card => {
-          const matchesCategory = active === 'all' || card.dataset.category === active;
-          const matchesQuery = !q || card.textContent.toLocaleLowerCase('fr').includes(q);
-          const show = matchesCategory && matchesQuery;
+          const show = (active === 'all' || card.dataset.category === active) &&
+            (!query || card.textContent.toLocaleLowerCase('fr').includes(query));
           card.hidden = !show;
           if (show) visible++;
         });
-        sections.forEach(section => {
-          section.hidden = ![...section.querySelectorAll('.card[data-category]')].some(card => !card.hidden);
+        document.querySelectorAll('[data-section]').forEach(section => {
+          section.hidden = ![...section.querySelectorAll('.card[data-tool-id]')].some(card => !card.hidden);
         });
         empty.style.display = visible ? 'none' : 'block';
       }
+      function updateControls() {
+        cards.forEach(card => {
+          const ui = ensureCardUi(card);
+          ui.actions.querySelectorAll('button').forEach(button => button.disabled = !canEdit);
+        });
+        initializeButton.disabled = !canEdit;
+      }
+
+      let dialog;
+      function closeEditor() {
+        if (dialog?.open) dialog.close();
+        dialog?.remove();
+        dialog = null;
+      }
+      function addFieldRow(container, key, value) {
+        const row = document.createElement('div');
+        row.className = 'editor-field' + (key === 'description' || key === 'url' ? ' wide' : '');
+        const label = document.createElement('label');
+        label.textContent = key;
+        let control;
+        if (typeof value === 'boolean') {
+          control = document.createElement('input');
+          control.type = 'checkbox';
+          control.checked = value;
+        } else if (typeof value === 'number') {
+          control = document.createElement('input');
+          control.type = 'number';
+          control.step = 'any';
+          control.value = String(value);
+        } else if (Array.isArray(value) || (value && typeof value === 'object') || value === null) {
+          control = document.createElement('textarea');
+          control.value = JSON.stringify(value, null, 2);
+          control.dataset.json = 'true';
+        } else if (key === 'category') {
+          control = document.createElement('select');
+          [['app','Créer une app'],['code','Coder'],['context','Contexte & intégrations'],['quality','Tester & sécuriser'],['delivery','Déployer'],['ops','Orchestrer']]
+            .forEach(([v, text]) => {
+              const option = document.createElement('option');
+              option.value = v; option.textContent = text; control.append(option);
+            });
+          control.value = String(value);
+        } else if (key === 'linkTarget') {
+          control = document.createElement('select');
+          ['_blank','_self'].forEach(v => {
+            const option = document.createElement('option');
+            option.value = v; option.textContent = v; control.append(option);
+          });
+          control.value = String(value);
+        } else {
+          control = key === 'description' ? document.createElement('textarea') : document.createElement('input');
+          control.type = key === 'url' ? 'url' : 'text';
+          control.value = String(value ?? '');
+          if (key === 'description') control.rows = 4;
+        }
+        control.dataset.field = key;
+        control.id = 'field-' + key.replace(/[^a-zA-Z0-9_-]/g, '-');
+        label.htmlFor = control.id;
+        row.append(label, control);
+        container.append(row);
+      }
+      function openEditor(data, card) {
+        if (!canEdit || !data) return;
+        closeEditor();
+        dialog = document.createElement('dialog');
+        dialog.className = 'editor-dialog';
+        const form = document.createElement('form');
+        const title = document.createElement('h2');
+        title.textContent = 'Modifier la fiche : ' + data.name;
+        const help = document.createElement('p');
+        help.className = 'editor-help';
+        help.textContent = 'Tous les champs enregistrés sont préremplis. Les listes et objets doivent rester au format JSON. L’identifiant technique outilId est fixe.';
+        const fields = document.createElement('div');
+        fields.className = 'editor-fields';
+        const editable = Object.keys(data).filter(key => !['toolId','_version','comments'].includes(key));
+        editable.forEach(key => addFieldRow(fields, key, data[key]));
+        const message = document.createElement('p');
+        message.className = 'editor-message';
+        const addCustom = document.createElement('button');
+        addCustom.type = 'button';
+        addCustom.textContent = 'Ajouter un champ personnalisé';
+        addCustom.addEventListener('click', () => {
+          const key = window.prompt('Nom du nouveau champ personnalisé (sans espace) :');
+          if (!key) return;
+          if (!/^[a-zA-Z][a-zA-Z0-9_-]{0,79}$/.test(key) || ['toolId','_version','comments'].includes(key) || editable.includes(key)) {
+            message.textContent = 'Nom de champ invalide ou déjà utilisé.';
+            return;
+          }
+          editable.push(key);
+          data[key] = '';
+          addFieldRow(fields, key, '');
+        });
+        const actions = document.createElement('div');
+        actions.className = 'editor-actions';
+        const cancel = document.createElement('button');
+        cancel.type = 'button'; cancel.textContent = 'Annuler';
+        cancel.addEventListener('click', closeEditor);
+        const save = document.createElement('button');
+        save.type = 'submit'; save.textContent = 'Enregistrer la fiche';
+        actions.append(addCustom, cancel, save);
+        form.append(title, help, fields, message, actions);
+        form.addEventListener('submit', async event => {
+          event.preventDefault();
+          const next = { ...data };
+          try {
+            fields.querySelectorAll('[data-field]').forEach(control => {
+              const key = control.dataset.field;
+              if (control.type === 'checkbox') next[key] = control.checked;
+              else if (control.type === 'number') {
+                if (control.value.trim() === '') throw new Error('Le champ ' + key + ' doit être un nombre.');
+                next[key] = Number(control.value);
+              } else if (control.dataset.json === 'true') next[key] = JSON.parse(control.value);
+              else next[key] = control.value;
+            });
+            if (!safeUrl(next.url)) throw new Error('URL refusée : seules les adresses http:// et https:// sont acceptées.');
+            save.disabled = true;
+            const response = await fetch(API + '/' + encodeURIComponent(data.toolId), {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json', 'If-Match': data._version },
+              body: JSON.stringify(next)
+            });
+            const result = await response.json();
+            if (response.status === 409) {
+              message.textContent = result.error || 'Conflit de versions : rechargez la fiche.';
+              await loadSaved();
+              save.disabled = false;
+              return;
+            }
+            if (!response.ok) throw new Error(result.error || 'Enregistrement refusé (' + response.status + ').');
+            closeEditor();
+            status('Fiche enregistrée. Relecture des données sauvegardées…');
+            await loadSaved();
+          } catch (error) {
+            message.textContent = error.message || 'Erreur de validation.';
+            save.disabled = false;
+          }
+        });
+        dialog.append(form);
+        document.body.append(dialog);
+        dialog.showModal();
+      }
+
+      function toggleCommentForm(card) {
+        const existing = card.querySelector('.comment-form');
+        if (existing) { existing.remove(); return; }
+        const form = document.createElement('form');
+        form.className = 'comment-form';
+        const textarea = document.createElement('textarea');
+        textarea.maxLength = 2000;
+        textarea.required = true;
+        textarea.placeholder = 'Votre commentaire (2 000 caractères maximum)…';
+        const submit = document.createElement('button');
+        submit.type = 'submit'; submit.textContent = 'Enregistrer le commentaire';
+        submit.disabled = !canEdit;
+        const feedback = document.createElement('span');
+        feedback.className = 'small';
+        form.append(textarea, submit, feedback);
+        form.addEventListener('submit', async event => {
+          event.preventDefault();
+          const text = textarea.value.trim();
+          if (!text || text.length > 2000) { feedback.textContent = 'Le commentaire doit contenir de 1 à 2 000 caractères.'; return; }
+          submit.disabled = true;
+          try {
+            const response = await fetch(API + '/' + encodeURIComponent(card.dataset.toolId) + '/comments', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text })
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Commentaire refusé.');
+            form.remove();
+            await loadSaved();
+            status('Commentaire enregistré.');
+          } catch (error) {
+            feedback.textContent = error.message || 'Erreur lors de l’enregistrement.';
+            submit.disabled = !canEdit;
+          }
+        });
+        card.append(form);
+        textarea.focus();
+      }
+
+      async function loadSaved() {
+        try {
+          const response = await fetch(API, { headers: { Accept: 'application/json' }, cache: 'no-store' });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error || 'API indisponible.');
+          canEdit = result.writeProtectionConfigured === true;
+          updateControls();
+          if (result.initialized) {
+            result.tools.forEach(data => {
+              const card = cards.find(item => item.dataset.toolId === data.toolId);
+              if (!card) return;
+              records.set(data.toolId, data);
+              applyRecord(card, data);
+            });
+            status('Fiches et commentaires relus depuis R2. ' + result.tools.length + ' fiches chargées.' +
+              (canEdit ? ' Modifications activables sous contrôle Cloudflare Access.' : ' Mode lecture seule : protection des modifications non configurée.'));
+            initializeButton.hidden = true;
+          } else {
+            cards.forEach(card => {
+              const data = seedCatalog.find(item => item.toolId === card.dataset.toolId);
+              if (data) {
+                records.set(data.toolId, { ...data, _version: null, comments: [] });
+                ensureCardUi(card);
+                renderComments(card, []);
+              }
+            });
+            status('Aucune initialisation R2 détectée. Le catalogue statique reste affiché.' +
+              (canEdit ? ' Vous pouvez lancer l’initialisation unique.' : ' Initialisation et modifications verrouillées jusqu’à la configuration de Cloudflare Access.'));
+            initializeButton.hidden = false;
+          }
+          filterCards();
+        } catch (error) {
+          canEdit = false;
+          updateControls();
+          initializeButton.hidden = true;
+          status('API R2 indisponible : affichage du catalogue HTML d’origine en lecture seule. ' + (error.message || ''), true);
+          cards.forEach(card => { ensureCardUi(card); renderComments(card, []); });
+        }
+      }
+
+      initializeButton.addEventListener('click', async () => {
+        if (!canEdit) return;
+        initializeButton.disabled = true;
+        try {
+          const response = await fetch('/api/admin/initialize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tools: seedCatalog })
+          });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error || 'Initialisation refusée.');
+          status('Initialisation terminée : ' + result.created + ' fiches créées, ' + result.skipped + ' préservées.');
+          await loadSaved();
+        } catch (error) {
+          status(error.message || 'Échec de l’initialisation.', true);
+          initializeButton.disabled = false;
+        }
+      });
+
       buttons.forEach(button => button.addEventListener('click', () => {
         active = button.dataset.filter;
         buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-        update();
+        filterCards();
       }));
-      search.addEventListener('input', update);
+      search.addEventListener('input', filterCards);
+      cards.forEach(card => ensureCardUi(card));
+      updateControls();
+      loadSaved();
     })();
   </script>
 </body>
