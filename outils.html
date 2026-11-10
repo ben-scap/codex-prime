@@ -470,7 +470,7 @@
         form.append(title, help, fields, message, actions);
         form.addEventListener('submit', async event => {
           event.preventDefault();
-          const next = { ...data };
+          const next = Object.fromEntries(Object.entries(data).filter(([key]) => !['_version','comments'].includes(key)));
           try {
             fields.querySelectorAll('[data-field]').forEach(control => {
               const key = control.dataset.field;
