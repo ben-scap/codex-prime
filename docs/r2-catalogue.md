@@ -46,7 +46,7 @@ Aucun mot de passe, jeton partagé, secret ou clé privée n’est placé dans l
 - `PUT /api/tools/{outilId}` : remplacement conditionnel de la fiche, Access et `If-Match` obligatoires.
 - `POST /api/tools/{outilId}/comments` : ajout d’un commentaire séparé, Access obligatoire.
 
-Les commentaires sont affichés par `textContent`, jamais injectés comme HTML. Les URL de fiche sont limitées à HTTP/HTTPS. Les tailles, longueurs, catégories, types et structures JSON sont validés côté serveur.
+Les commentaires sont lisibles publiquement via `GET /api/catalog` et affichés par `textContent`, jamais injectés comme HTML. Seuls les utilisateurs Access autorisés peuvent en ajouter ou modifier une fiche. Les URL de fiche sont limitées à HTTP/HTTPS. Les tailles, longueurs, catégories, types et structures JSON sont validés côté serveur.
 
 ## Tests
 
