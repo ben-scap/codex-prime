@@ -277,7 +277,7 @@ async function addComment(request, env, toolId) {
 
 async function route({ request, env }) {
   const url = new URL(request.url);
-  if (url.pathname === "/api/tools" && request.method === "GET") {
+  if (url.pathname === "/api/catalog" && request.method === "GET") {
     if (!env.TOOLS_R2) return json({ error: "Binding R2 TOOLS_R2 manquant.", initialized: false, tools: [], writeProtectionConfigured: configured(env) }, 503);
     const tools = await readAllTools(env.TOOLS_R2);
     const initialized = Boolean(await env.TOOLS_R2.head("meta/catalog-initialized.json"));
