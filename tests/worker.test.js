@@ -144,14 +144,14 @@ test("initialise une seule fois et ne remplace jamais une fiche existante", asyn
   const second = await call("POST", "/api/admin/initialize", { tools: [changed, initialB] }, headers);
   assert.equal(second.response.status, 409);
 
-  const loaded = await call("GET", "/api/tools");
+  const loaded = await call("GET", "/api/catalog");
   assert.equal(loaded.response.status, 200);
   assert.equal(loaded.data.initialized, true);
   assert.equal(loaded.data.tools.find(tool => tool.toolId === "tool-alpha").name, "Alpha");
 });
 
 test("modifie chaque champ, conserve les types et retrouve la fiche après rechargement", async () => {
-  const loaded = await call("GET", "/api/tools");
+  const loaded = await call("GET", "/api/catalog");
   const original = loaded.data.tools.find(tool => tool.toolId === "tool-alpha");
   const changed = {
     ...initialA,
@@ -172,7 +172,7 @@ test("modifie chaque champ, conserve les types et retrouve la fiche après recha
   const saved = await call("PUT", "/api/tools/tool-alpha", changed, await editorHeaders({ "If-Match": original._version }));
   assert.equal(saved.response.status, 200);
 
-  const reloaded = await call("GET", "/api/tools");
+  const reloaded = await call("GET", "/api/catalog");
   const record = reloaded.data.tools.find(tool => tool.toolId === "tool-alpha");
   for (const key of Object.keys(changed)) assert.deepEqual(record[key], changed[key], "champ " + key);
   assert.equal(typeof record.enabled, "boolean");
@@ -182,14 +182,14 @@ test("modifie chaque champ, conserve les types et retrouve la fiche après recha
 });
 
 test("un commentaire sur A reste séparé de B et survit au changement d’URL de A", async () => {
-  let loaded = await call("GET", "/api/tools");
+  let loaded = await call("GET", "/api/catalog");
   let alpha = loaded.data.tools.find(tool => tool.toolId === "tool-alpha");
   const comment = await call("POST", "/api/tools/tool-alpha/comments", {
     text: "Commentaire lié à Alpha"
   }, await editorHeaders());
   assert.equal(comment.response.status, 201);
 
-  loaded = await call("GET", "/api/tools");
+  loaded = await call("GET", "/api/catalog");
   alpha = loaded.data.tools.find(tool => tool.toolId === "tool-alpha");
   const renamedUrl = { ...alpha };
   delete renamedUrl._version;
@@ -198,7 +198,7 @@ test("un commentaire sur A reste séparé de B et survit au changement d’URL d
   const update = await call("PUT", "/api/tools/tool-alpha", renamedUrl, await editorHeaders({ "If-Match": alpha._version }));
   assert.equal(update.response.status, 200);
 
-  const after = await call("GET", "/api/tools");
+  const after = await call("GET", "/api/catalog");
   const a = after.data.tools.find(tool => tool.toolId === "tool-alpha");
   const b = after.data.tools.find(tool => tool.toolId === "tool-beta");
   assert.equal(a.url, "https://alpha-new.example/");
@@ -208,7 +208,7 @@ test("un commentaire sur A reste séparé de B et survit au changement d’URL d
 });
 
 test("refuse une URL invalide et un commentaire vide ou trop long", async () => {
-  const loaded = await call("GET", "/api/tools");
+  const loaded = await call("GET", "/api/catalog");
   const alpha = loaded.data.tools.find(tool => tool.toolId === "tool-alpha");
   const bad = { ...initialA, url: "javascript:alert(1)" };
   const invalidUrl = await call("PUT", "/api/tools/tool-alpha", bad, await editorHeaders({ "If-Match": alpha._version }));
@@ -231,7 +231,7 @@ test("refuse un accès non autorisé et une adresse non inscrite dans la liste",
 });
 
 test("signale un conflit de versions au lieu d’écraser une modification récente", async () => {
-  const loaded = await call("GET", "/api/tools");
+  const loaded = await call("GET", "/api/catalog");
   const alpha = loaded.data.tools.find(tool => tool.toolId === "tool-alpha");
   const version = alpha._version;
   const updateOne = await call("PUT", "/api/tools/tool-alpha", {
@@ -243,7 +243,7 @@ test("signale un conflit de versions au lieu d’écraser une modification réce
     ...initialA, name: "Édition obsolète"
   }, await editorHeaders({ "If-Match": version }));
   assert.equal(updateTwo.response.status, 409);
-  const final = await call("GET", "/api/tools");
+  const final = await call("GET", "/api/catalog");
   assert.equal(final.data.tools.find(tool => tool.toolId === "tool-alpha").name, "Édition numéro un");
 });
 
