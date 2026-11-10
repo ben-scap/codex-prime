@@ -1,0 +1,8 @@
+{
+  "name": "codex-prime",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
