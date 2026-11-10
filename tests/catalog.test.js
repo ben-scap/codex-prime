@@ -19,3 +19,10 @@ test("le catalogue statique conserve ses 43 fiches et ses six catégories", asyn
   assert.equal(new Set(cards.map(match => match[2])).size, 43);
   assert.deepEqual([...new Set(cards.map(match => match[1]))].sort(), ["app", "code", "context", "delivery", "ops", "quality"]);
 });
+
+test("le JavaScript intégré de la page est syntaxiquement valide", async () => {
+  const html = await readFile(new URL("../outils.html", import.meta.url), "utf8");
+  const scripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
+  assert.ok(scripts.length > 0);
+  assert.doesNotThrow(() => new Function(scripts[scripts.length - 1][1]));
+});
