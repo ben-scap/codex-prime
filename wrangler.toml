@@ -1,7 +1,0 @@
-name = "codex-prime"
-pages_build_output_dir = "./"
-compatibility_date = "2026-11-10"
-
-[[r2_buckets]]
-binding = "TOOLS_R2"
-bucket_name = "codex-prime-tools"
