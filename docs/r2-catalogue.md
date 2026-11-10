@@ -29,20 +29,20 @@ Les modifications utilisent l’ETag R2 dans `If-Match` et une écriture conditi
 3. Créer une application Cloudflare Access protégeant les chemins d’API d’écriture :
    - `/api/tools/*`
    - `/api/admin/*`
-   Autoriser uniquement l’adresse e-mail de l’éditeur prévue. L’endpoint public de lecture `GET /api/tools` reste hors de ces motifs.
+   Autoriser uniquement l’adresse e-mail de l’éditeur prévue. L’endpoint public de lecture `GET /api/catalog` reste hors de ces motifs.
 4. Dans les variables d’environnement Pages Functions (Preview d’abord, puis Production si souhaité), définir :
    - `ACCESS_TEAM_DOMAIN` : domaine de l’équipe, par exemple `mon-equipe.cloudflareaccess.com` (sans protocole).
    - `ACCESS_AUD` : Audience (AUD) de l’application Access.
    - `EDITOR_EMAILS` : liste d’adresses autorisées, séparées par des virgules.
    - `ACCESS_ENABLED` : mettre `true` seulement après avoir réellement activé l’application Access et vérifié ses chemins/politiques.
-5. Déployer d’abord sur la prévisualisation de `feat/pied-de-page`, puis vérifier que `GET /api/tools` répond et que les boutons restent désactivés tant que `ACCESS_ENABLED` n’est pas `true`.
+5. Déployer d’abord sur la prévisualisation de `feat/pied-de-page`, puis vérifier que `GET /api/catalog` répond et que les boutons restent désactivés tant que `ACCESS_ENABLED` n’est pas `true`.
 6. Après activation d’Access, ouvrir la prévisualisation, s’authentifier et cliquer une seule fois sur « Initialiser les 43 fiches dans R2 ».
 
 Aucun mot de passe, jeton partagé, secret ou clé privée n’est placé dans le JavaScript ou dans le dépôt. Le Worker vérifie la signature RS256 du JWT Cloudflare Access, son émetteur, son audience, son expiration et l’adresse autorisée. CORS n’est pas utilisé comme mécanisme d’autorisation.
 
 ## Routes
 
-- `GET /api/tools` : lecture des fiches et commentaires.
+- `GET /api/catalog` : lecture des fiches et commentaires.
 - `POST /api/admin/initialize` : initialisation unique, Access obligatoire.
 - `PUT /api/tools/{outilId}` : remplacement conditionnel de la fiche, Access et `If-Match` obligatoires.
 - `POST /api/tools/{outilId}/comments` : ajout d’un commentaire séparé, Access obligatoire.
