@@ -22,7 +22,9 @@ test("le catalogue statique conserve ses 43 fiches et ses six catégories", asyn
 
 test("le JavaScript intégré de la page est syntaxiquement valide", async () => {
   const html = await readFile(new URL("../outils.html", import.meta.url), "utf8");
-  const scripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
-  assert.ok(scripts.length > 0);
-  assert.doesNotThrow(() => new Function(scripts[scripts.length - 1][1]));
+  const start = html.lastIndexOf("<script>");
+  const end = html.indexOf("</script>", start);
+  assert.ok(start >= 0 && end > start);
+  const script = html.slice(start + 8, end);
+  assert.doesNotThrow(() => new Function(script));
 });
