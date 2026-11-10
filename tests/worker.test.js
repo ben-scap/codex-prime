@@ -71,6 +71,7 @@ class MemoryR2 {
 const bucket = new MemoryR2();
 const env = {
   TOOLS_R2: bucket,
+  ACCESS_ENABLED: "true",
   ACCESS_TEAM_DOMAIN: "team.cloudflareaccess.com",
   ACCESS_AUD: "codex-prime-access-audience",
   EDITOR_EMAILS: "editor@example.com"
