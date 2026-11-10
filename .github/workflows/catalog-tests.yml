@@ -1,6 +1,7 @@
 name: Tests du catalogue et de l’API R2
 
 on:
+  workflow_dispatch:
   push:
     branches: ["feat/pied-de-page"]
   pull_request:
