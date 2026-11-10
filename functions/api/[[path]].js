@@ -275,7 +275,7 @@ async function addComment(request, env, toolId) {
   return json({ comment }, 201);
 }
 
-export async function onRequest({ request, env }) {
+async function route({ request, env }) {
   const url = new URL(request.url);
   if (url.pathname === "/api/tools" && request.method === "GET") {
     if (!env.TOOLS_R2) return json({ error: "Binding R2 TOOLS_R2 manquant.", initialized: false, tools: [], writeProtectionConfigured: configured(env) }, 503);
@@ -292,6 +292,14 @@ export async function onRequest({ request, env }) {
   if (toolMatch && request.method === "PUT") return updateTool(request, env, toolMatch[1]);
 
   return json({ error: "Route API inconnue." }, 404);
+}
+
+export async function onRequest(context) {
+  try {
+    return await route(context);
+  } catch (error) {
+    return json({ error: error?.message || "Erreur interne." }, error?.status || 500);
+  }
 }
 
 export default { onRequest };
