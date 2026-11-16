@@ -115,7 +115,7 @@ export default {
       });
     }
 
-    if (request.method === "PUT" && url.pathname === "/api/outils") {
+    if (request.method === "PUT" && url.pathname === "/api/admin/outils") {
       const jwt = request.headers.get("Cf-Access-Jwt-Assertion");
       if (!await verifyAccessJwt(jwt, env)) {
         return response(JSON.stringify({ error: "Authentification Cloudflare Access invalide ou absente." }), 401, origin);
