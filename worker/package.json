@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "npx --yes wrangler@4.45.0 dev",
     "deploy": "npx --yes wrangler@4.45.0 deploy",
-    "tail": "npx --yes wrangler@4.45.0 tail"
+    "tail": "npx --yes wrangler@4.45.0 tail",
+    "test": "node --test"
   }
 }
