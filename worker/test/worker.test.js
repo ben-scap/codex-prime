@@ -1,9 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { webcrypto } from "node:crypto";
 import worker from "../src/index.js";
 
-globalThis.crypto = webcrypto;
 const encoder = new TextEncoder();
 const b64 = value => Buffer.from(value).toString("base64url");
 let privateKey, publicJwk;
