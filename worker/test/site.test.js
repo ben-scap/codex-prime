@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 test("la page conserve les 43 outils, leurs champs et les actions de fiche/commentaire", async () => {
   const html = await readFile(new URL("../../outils.html", import.meta.url), "utf8");
-  const cards = [...html.matchAll(/<article class="card" data-category="([^"]+)" data-tool-id="([^"]+)">([\\s\\S]*?)<\\/article>/g)];
+  const cards = [...html.matchAll(/<article class="card" data-category="([^"]+)" data-tool-id="([^"]+)">([\s\S]*?)<\/article>/g)];
   assert.equal(cards.length, 43);
   const ids = cards.map(card => card[2]);
   assert.equal(new Set(ids).size, 43, "les toolId doivent être uniques");
