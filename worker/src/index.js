@@ -108,8 +108,11 @@ async function getTool(bucket, id) {
   comments.sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
   return { ...tool, comments };
 }
+function accessReady(env) {
+  return env.ACCESS_APP_CONFIGURED === "true" && Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD);
+}
 async function requireAdmin(request, env, origin) {
-  if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD) {
+  if (!accessReady(env)) {
     return json({ error: "Modifications désactivées : Cloudflare Access n'est pas configuré côté Worker." }, 503, origin, env);
   }
   if (!await verifyAccess(request, env)) return json({ error: "Authentification Cloudflare Access requise." }, 401, origin, env);
@@ -135,7 +138,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, "") || "/";
     if (request.method === "GET" && path === "/api/status") {
-      return json({ adminEnabled: Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD) }, 200, origin, env);
+      return json({ adminEnabled: accessReady(env) }, 200, origin, env);
     }
     if (request.method === "GET" && path === "/api/tools") {
       const keys = await listAll(env.OUTILS_BUCKET, TOOL_PREFIX);
@@ -207,6 +210,8 @@ export default {
       let body;
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
       if (typeof body.text !== "string" || !body.text.trim() || body.text.length > 5000) return json({ error: "Commentaire vide ou trop long (5000 caractères maximum)." }, 422, origin, env);
+      const existingComments = await listAll(env.OUTILS_BUCKET, COMMENT_PREFIX + id + "/");
+      if (existingComments.length >= MAX_COMMENTS) return json({ error: "Nombre maximal de commentaires atteint." }, 429, origin, env);
       const commentId = crypto.randomUUID();
       const comment = { commentId, toolId: id, text: body.text.trim(), createdAt: new Date().toISOString() };
       await env.OUTILS_BUCKET.put(COMMENT_PREFIX + id + "/" + commentId + ".json", JSON.stringify(comment), { httpMetadata: { contentType: "application/json; charset=utf-8" } });
