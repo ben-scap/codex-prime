@@ -1,21 +1,42 @@
 name: Worker tests
+
 on:
   push:
-    branches: [main]
+    branches: ["main"]
     paths:
       - "worker/**"
       - ".github/workflows/worker-tests.yml"
+      - ".github/workflows/deploy-worker.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "worker/**"
+      - ".github/workflows/worker-tests.yml"
+      - ".github/workflows/deploy-worker.yml"
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   test:
+    name: Test Worker and site integration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Test Worker
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: worker
+        run: npm ci
+
+      - name: Run tests
         working-directory: worker
         run: npm test
