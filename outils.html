@@ -285,9 +285,24 @@
       if (!response.ok) { const e=new Error(data.message||data.error||('HTTP '+response.status));e.status=response.status;throw e; }
       return data;
     }
-    function enableButtons(enabled) {
-      cards.forEach(card=>card.querySelectorAll('.tool-action').forEach(button=>button.disabled=!enabled));
+    function enableButtons(apiAvailable) {
+      cards.forEach(card=>{
+        const stateAvailable=states.has(card.dataset.toolId);
+        const edit=card.querySelector('.edit-tool');
+        const comment=card.querySelector('.add-comment');
+        // Les actions restent cliquables dès que la fiche est chargée :
+        // les écritures sont ensuite autorisées ou refusées par Cloudflare Access côté Worker.
+        edit.disabled=!(apiAvailable && stateAvailable);
+        comment.disabled=!(apiAvailable && stateAvailable);
+        edit.title=adminEnabled?'Modifier cette fiche':'Modification protégée par Cloudflare Access';
+        comment.title=adminEnabled?'Consulter ou ajouter un commentaire':'Consultation ouverte ; ajout protégé par Cloudflare Access';
+      });
     }
+    const toolRoutes = {
+      list: () => '/api/outils',
+      edit: id => '/api/outils/'+encodeURIComponent(id),
+      comments: id => '/api/outils/'+encodeURIComponent(id)+'/commentaires'
+    };
     function render(card, tool, comments) {
       card.dataset.category = tool.category;
       card.querySelector('h3').textContent = tool.name;
@@ -311,13 +326,13 @@
       if(!apiReady){status('API non configurée. Catalogue statique visible ; modifications désactivées.');enableButtons(false);return;}
       try {
         const state=await api('/api/status');adminEnabled=state.adminEnabled===true;
-        const data=await api('/api/outils');
+        const data=await api(toolRoutes.list());
         for(const tool of data.tools||[]){
           const card=cards.find(c=>c.dataset.toolId===tool.toolId);
           if(card)render(card,tool,tool.comments||[]);
         }
-        enableButtons(adminEnabled);
-        status(adminEnabled?'API connectée. Les écritures restent vérifiées par Cloudflare Access côté serveur.':'Lecture disponible ; modifications désactivées car Cloudflare Access n’est pas configuré.',adminEnabled);
+        enableButtons(true);
+        status(adminEnabled?'API connectée. Les écritures restent vérifiées par Cloudflare Access côté serveur.':'API connectée en lecture. Les fiches et commentaires sont consultables ; les écritures nécessitent Cloudflare Access.',adminEnabled);
       } catch(e){enableButtons(false);status('Lecture distante indisponible : '+e.message+'. Modifications désactivées.');}
     }
     function openEdit(tool) {
@@ -329,14 +344,19 @@
     }
     cards.forEach(card=>{
       card.querySelector('.edit-tool').addEventListener('click',()=>{
-        const state=states.get(card.dataset.toolId);if(state)openEdit(state.tool);
+        const state=states.get(card.dataset.toolId);if(!state)return;
+        if(!adminEnabled){
+          status('La fiche est consultable, mais sa modification nécessite une session Cloudflare Access autorisée.',false);
+          return;
+        }
+        openEdit(state.tool);
       });
       card.querySelector('.add-comment').addEventListener('click',async()=>{
         const state=states.get(card.dataset.toolId);if(!state)return;
         currentCommentId=card.dataset.toolId;
         const list=document.getElementById('comments-list');list.replaceChildren();
         try {
-          const result=await api('/api/outils/'+encodeURIComponent(currentCommentId)+'/commentaires');
+          const result=await api(toolRoutes.comments(currentCommentId));
           state.comments=result.commentaires||[];
         } catch(e) {
           status('Lecture des commentaires impossible : '+e.message,false);return;
@@ -347,7 +367,11 @@
           const date=document.createElement('div');date.className='comment-date';date.textContent=comment.createdAt||'';
           item.append(body,date);list.append(item);
         });
-        commentForm.reset();document.getElementById('comment-message').textContent='';commentDialog.showModal();
+        commentForm.reset();
+        const commentSubmit=commentForm.querySelector('[type=submit]');
+        commentSubmit.disabled=!adminEnabled;
+        document.getElementById('comment-message').textContent=adminEnabled?'':'Lecture seule : connectez-vous via Cloudflare Access pour ajouter un commentaire.';
+        commentDialog.showModal();
       });
     });
     form.addEventListener('submit',async event=>{
@@ -361,7 +385,7 @@
         let url;try{url=new URL(tool.link_url);}catch{throw Error('URL invalide.');}
         if(!['http:','https:'].includes(url.protocol))throw Error('Seules les URL http et https sont autorisées.');
         if(!tool.name||tool.name.length>200||!tool.type||tool.type.length>120||tool.description.length>5000||tool.link_url.length>2048||tool.link_label.length>200)throw Error('Un champ obligatoire est vide ou dépasse sa longueur maximale.');
-        const result=await api('/api/outils/'+encodeURIComponent(currentEditId),{method:'PUT',body:JSON.stringify({expectedVersion:state.tool.version,tool})});
+        const result=await api(toolRoutes.edit(currentEditId),{method:'PUT',body:JSON.stringify({expectedVersion:state.tool.version,tool})});
         const card=cards.find(c=>c.dataset.toolId===currentEditId);render(card,result.tool,state.comments);
         const target=document.querySelector('[data-section="'+result.tool.category+'"] .grid');if(target)target.append(card);
         editDialog.close();status('Fiche enregistrée dans R2.'); 
@@ -372,7 +396,7 @@
       event.preventDefault();const message=document.getElementById('comment-message');const submit=commentForm.querySelector('[type=submit]');submit.disabled=true;
       try{
         const text=commentForm.elements.text.value.trim();if(!text||text.length>5000)throw Error('Commentaire requis (5000 caractères maximum).');
-        const result=await api('/api/outils/'+encodeURIComponent(currentCommentId)+'/commentaires',{method:'POST',body:JSON.stringify({text})});
+        const result=await api(toolRoutes.comments(currentCommentId),{method:'POST',body:JSON.stringify({text})});
         const state=states.get(currentCommentId);state.comments.push(result.comment);
         const card=cards.find(c=>c.dataset.toolId===currentCommentId);render(card,state.tool,state.comments);
         commentDialog.close();status('Commentaire enregistré dans un objet R2 séparé.');
