@@ -31,6 +31,7 @@ class MemoryR2 {
   async put(key, value, options = {}) {
     const current = this.items.get(key);
     if (options.onlyIf?.etagMatches && current?.etag !== options.onlyIf.etagMatches) return null;
+    if (options.onlyIf?.etagDoesNotMatch === "*" && current) return null;
     const etag = "etag-" + (++this.serial);
     this.items.set(key, { value: String(value), etag });
     return { etag };
