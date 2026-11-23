@@ -20,5 +20,5 @@ test("la page conserve les 43 outils, leurs champs et les actions de fiche/comme
   }
   assert.match(html, /textContent/);
   assert.doesNotMatch(html, /innerHTML/);
-  assert.match(html, /const API_BASE_URL = ""/);
+  assert.match(html, /const API_BASE_URL = "https:\/\/codex-prime-api\.toupe-benoit\.workers\.dev"/);
 });
