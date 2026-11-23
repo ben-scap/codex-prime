@@ -177,8 +177,11 @@ export default {
         const key = TOOL_PREFIX + id + ".json";
         const existing = await env.OUTILS_BUCKET.get(key);
         if (existing) { skipped++; continue; }
-        await env.OUTILS_BUCKET.put(key, JSON.stringify({ ...tool, version: 1, updatedAt: new Date().toISOString() }), { httpMetadata: { contentType: "application/json; charset=utf-8" } });
-        created++;
+        const inserted = await env.OUTILS_BUCKET.put(key, JSON.stringify({ ...tool, version: 1, updatedAt: new Date().toISOString() }), {
+          onlyIf: { etagDoesNotMatch: "*" },
+          httpMetadata: { contentType: "application/json; charset=utf-8" }
+        });
+        if (inserted) created++; else skipped++;
       }
       return json({ ok: true, created, skipped }, 200, origin, env);
     }
