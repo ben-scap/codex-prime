@@ -26,7 +26,7 @@
     footer{padding:38px 0 48px;text-align:center;color:var(--muted);font-size:.9rem}
     @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.infographic{grid-template-columns:1fr}.infographic img{max-height:520px;object-fit:contain}}
     @media(max-width:560px){.wrap{width:calc(100% - 26px)}.hero{padding-top:48px}.grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.navlinks .pill-link:first-child{display:none}.card{min-height:unset}.toolbar{position:static}}
-  </style>
+  .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.tool-action,.admin-action{cursor:pointer;border:1px solid var(--border);border-radius:10px;padding:8px 11px;background:#ffffff0b;color:var(--text);font:inherit;font-size:.82rem}.tool-action:disabled,.admin-action:disabled{opacity:.45;cursor:not-allowed}.admin-status{margin:14px auto 0;padding:12px 15px;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:.9rem}.tool-dialog{width:min(720px,calc(100% - 24px));max-height:88vh;overflow:auto;background:#111a30;color:var(--text);border:1px solid var(--border);border-radius:18px;padding:24px}.tool-dialog::backdrop{background:#020617dd}.tool-form{display:grid;gap:12px}.tool-form label{display:grid;gap:5px;color:var(--muted);font-size:.9rem}.tool-form input,.tool-form textarea,.tool-form select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:#080f20;color:var(--text);font:inherit}.tool-form textarea{min-height:90px}.dialog-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}.comments-list{margin:12px 0}.comment-item{padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin:8px 0;overflow-wrap:anywhere}.comment-date,.admin-message{color:var(--muted);font-size:.85rem}.admin-message{min-height:1.5em}@media(max-width:560px){.card-actions{flex-direction:column}}\n</style>
 </head>
 <body>
   <header class="wrap">
@@ -69,79 +69,79 @@
       <section class="section" data-section="app">
         <div class="section-head"><div><h2>01 · Créer une application ou une interface</h2><p>Partir d’une idée, d’un prompt ou d’un design pour produire un prototype.</p></div><span class="count">6 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="app"><div class="card-top"><h3>Bolt.new</h3><span class="type">Web</span></div><p>Générer et faire évoluer une application à partir d’instructions en langage naturel.</p><a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Dyad</h3><span class="type">Desktop</span></div><p>Créer des applications en local avec des fournisseurs de modèles configurables.</p><a href="https://github.com/dyad-sh/dyad" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Lovable</h3><span class="type">Web</span></div><p>Construire des applications full-stack, notamment avec une intégration Supabase.</p><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Onlook</h3><span class="type">Visuel</span></div><p>Modifier visuellement une interface tout en travaillant sur le code de l’application.</p><a href="https://www.onlook.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>Replit Agent</h3><span class="type">Web</span></div><p>Créer et itérer sur des applications dans l’environnement Replit.</p><a href="https://replit.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="app"><div class="card-top"><h3>v0</h3><span class="type">UI / React</span></div><p>Générer des interfaces et du code React avec l’IA de Vercel.</p><a href="https://v0.app/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="app" data-tool-id="643c90cd-124d-4052-88e3-5f0d633efb61"><div class="card-top"><h3>Bolt.new</h3><span class="type">Web</span></div><p>Générer et faire évoluer une application à partir d’instructions en langage naturel.</p><a href="https://bolt.new/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="app" data-tool-id="273c1c03-aeea-4a8e-90f9-2272b2adb56a"><div class="card-top"><h3>Dyad</h3><span class="type">Desktop</span></div><p>Créer des applications en local avec des fournisseurs de modèles configurables.</p><a href="https://github.com/dyad-sh/dyad" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="app" data-tool-id="2f5d9bbe-2326-4746-a8a4-bb2758f7dbbd"><div class="card-top"><h3>Lovable</h3><span class="type">Web</span></div><p>Construire des applications full-stack, notamment avec une intégration Supabase.</p><a href="https://lovable.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="app" data-tool-id="cbead36e-1545-44ad-b381-c9e8551f2ee9"><div class="card-top"><h3>Onlook</h3><span class="type">Visuel</span></div><p>Modifier visuellement une interface tout en travaillant sur le code de l’application.</p><a href="https://www.onlook.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="app" data-tool-id="a5450e34-5535-4582-8d62-97773a58c38a"><div class="card-top"><h3>Replit Agent</h3><span class="type">Web</span></div><p>Créer et itérer sur des applications dans l’environnement Replit.</p><a href="https://replit.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="app" data-tool-id="94c331bf-6908-406f-9e4f-88a1f179fe50"><div class="card-top"><h3>v0</h3><span class="type">UI / React</span></div><p>Générer des interfaces et du code React avec l’IA de Vercel.</p><a href="https://v0.app/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
         </div>
       </section>
 
       <section class="section" data-section="code">
         <div class="section-head"><div><h2>02 · Écrire, comprendre et refactorer le code</h2><p>Assistants de programmation, agents et environnements de développement.</p></div><span class="count">10 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="code"><div class="card-top"><h3>Aider</h3><span class="type">CLI · Open source</span></div><p>Pair programming dans le terminal avec des modèles cloud ou locaux et intégration Git.</p><a href="https://github.com/Aider-AI/aider" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Claude Code</h3><span class="type">Agent CLI</span></div><p>Agent de code pour travailler dans un dépôt et exécuter des workflows de développement.</p><a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Cline</h3><span class="type">Agent</span></div><p>Agent pour IDE, terminal et desktop, avec outils pour les fichiers, commandes et navigateur.</p><a href="https://github.com/cline/cline" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Cursor</h3><span class="type">IDE</span></div><p>Éditeur de code orienté IA pour implémenter, déboguer et revoir du code.</p><a href="https://www.cursor.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>GitHub Copilot</h3><span class="type">Assistant</span></div><p>Assistance à la programmation et workflows d’agents dans GitHub et les IDE compatibles.</p><a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Goose</h3><span class="type">CLI / Desktop</span></div><p>Agent extensible avec interfaces terminal et desktop, et intégrations MCP.</p><a href="https://github.com/aaif-goose/goose" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Kiro</h3><span class="type">IDE / CLI</span></div><p>Agent de développement AWS avec spécifications et tests intégrés au workflow.</p><a href="https://kiro.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>OpenAI Codex</h3><span class="type">Agent</span></div><p>Agent de programmation pour aider à comprendre, modifier et vérifier un projet.</p><a href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Pi</h3><span class="type">CLI · MIT</span></div><p>Agent de code en terminal, extensible, avec prise en charge de plusieurs fournisseurs.</p><a href="https://github.com/earendil-works/pi" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="code"><div class="card-top"><h3>Warp Terminal</h3><span class="type">Terminal</span></div><p>Terminal moderne conçu pour les workflows de développement assistés par agents.</p><a href="https://www.warp.dev/terminal" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
+          <article class="card" data-category="code" data-tool-id="69ddf86d-9686-459f-8690-b9586f21afde"><div class="card-top"><h3>Aider</h3><span class="type">CLI · Open source</span></div><p>Pair programming dans le terminal avec des modèles cloud ou locaux et intégration Git.</p><a href="https://github.com/Aider-AI/aider" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="cf9d40b7-232b-4c5b-926b-5dea6e3e40a7"><div class="card-top"><h3>Claude Code</h3><span class="type">Agent CLI</span></div><p>Agent de code pour travailler dans un dépôt et exécuter des workflows de développement.</p><a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="991374ef-695e-4f8a-9ae6-7bd8aea2daa3"><div class="card-top"><h3>Cline</h3><span class="type">Agent</span></div><p>Agent pour IDE, terminal et desktop, avec outils pour les fichiers, commandes et navigateur.</p><a href="https://github.com/cline/cline" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="4f3df82e-6065-4d26-9948-3372769c204a"><div class="card-top"><h3>Cursor</h3><span class="type">IDE</span></div><p>Éditeur de code orienté IA pour implémenter, déboguer et revoir du code.</p><a href="https://www.cursor.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="f5a0ba3a-9b1d-4832-8293-ed360b473a30"><div class="card-top"><h3>GitHub Copilot</h3><span class="type">Assistant</span></div><p>Assistance à la programmation et workflows d’agents dans GitHub et les IDE compatibles.</p><a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="bbad70d0-3427-4381-84c8-c4eb25f66ff6"><div class="card-top"><h3>Goose</h3><span class="type">CLI / Desktop</span></div><p>Agent extensible avec interfaces terminal et desktop, et intégrations MCP.</p><a href="https://github.com/aaif-goose/goose" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="76291ff2-87af-44e8-956d-352e2aacdb7a"><div class="card-top"><h3>Kiro</h3><span class="type">IDE / CLI</span></div><p>Agent de développement AWS avec spécifications et tests intégrés au workflow.</p><a href="https://kiro.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="229d71c2-771b-47ef-9a1a-204fa313ab62"><div class="card-top"><h3>OpenAI Codex</h3><span class="type">Agent</span></div><p>Agent de programmation pour aider à comprendre, modifier et vérifier un projet.</p><a href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="90adcb8c-8036-4320-b29a-79a0064af468"><div class="card-top"><h3>Pi</h3><span class="type">CLI · MIT</span></div><p>Agent de code en terminal, extensible, avec prise en charge de plusieurs fournisseurs.</p><a href="https://github.com/earendil-works/pi" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="code" data-tool-id="28b0f691-a089-487f-99e8-e9ffeb984d98"><div class="card-top"><h3>Warp Terminal</h3><span class="type">Terminal</span></div><p>Terminal moderne conçu pour les workflows de développement assistés par agents.</p><a href="https://www.warp.dev/terminal" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
         </div>
       </section>
 
       <section class="section" data-section="context">
         <div class="section-head"><div><h2>03 · Ajouter du contexte et connecter les outils</h2><p>Donner aux agents accès aux règles du projet, à la documentation et aux services.</p></div><span class="count">8 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="context"><div class="card-top"><h3>Caliber</h3><span class="type">Configuration</span></div><p>Générer et synchroniser des configurations d’agents IA pour plusieurs environnements.</p><a href="https://github.com/caliber-ai-org/ai-setup" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Context7</h3><span class="type">MCP</span></div><p>Fournir aux assistants la documentation à jour des bibliothèques et frameworks.</p><a href="https://github.com/upstash/context7" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Filesystem MCP</h3><span class="type">MCP</span></div><p>Permettre aux agents d’accéder aux fichiers d’un projet selon des chemins autorisés.</p><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>GitHub MCP</h3><span class="type">MCP</span></div><p>Connecter un agent aux dépôts, issues et pull requests GitHub.</p><a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Neon MCP</h3><span class="type">MCP / Base de données</span></div><p>Connecter les workflows IA aux bases de données Neon.</p><a href="https://github.com/neondatabase/mcp-server-neon" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Notion MCP</h3><span class="type">MCP</span></div><p>Rechercher, lire et mettre à jour du contenu Notion depuis un agent compatible.</p><a href="https://developers.notion.com/guides/mcp/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>OpenSpec</h3><span class="type">Spécifications</span></div><p>Structurer le développement avec des spécifications adaptées aux assistants IA.</p><a href="https://github.com/Fission-AI/OpenSpec" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="context"><div class="card-top"><h3>Supabase MCP</h3><span class="type">MCP / Backend</span></div><p>Connecter des agents aux schémas, requêtes et configurations Supabase.</p><a href="https://github.com/supabase/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="context" data-tool-id="eb5fb631-5862-4e29-a722-ba5c9b02bf36"><div class="card-top"><h3>Caliber</h3><span class="type">Configuration</span></div><p>Générer et synchroniser des configurations d’agents IA pour plusieurs environnements.</p><a href="https://github.com/caliber-ai-org/ai-setup" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="1e840103-a612-4a14-9d14-bd4aaa24c3f5"><div class="card-top"><h3>Context7</h3><span class="type">MCP</span></div><p>Fournir aux assistants la documentation à jour des bibliothèques et frameworks.</p><a href="https://github.com/upstash/context7" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="8fe2490d-8613-40e8-ace8-206e784fe298"><div class="card-top"><h3>Filesystem MCP</h3><span class="type">MCP</span></div><p>Permettre aux agents d’accéder aux fichiers d’un projet selon des chemins autorisés.</p><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="30695f63-02e0-4ba0-92d2-e0544c81d272"><div class="card-top"><h3>GitHub MCP</h3><span class="type">MCP</span></div><p>Connecter un agent aux dépôts, issues et pull requests GitHub.</p><a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="2d5081f1-541e-4864-a1bd-b7598bd8f65f"><div class="card-top"><h3>Neon MCP</h3><span class="type">MCP / Base de données</span></div><p>Connecter les workflows IA aux bases de données Neon.</p><a href="https://github.com/neondatabase/mcp-server-neon" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="055697ca-a4cb-43d8-b138-957ea8096c39"><div class="card-top"><h3>Notion MCP</h3><span class="type">MCP</span></div><p>Rechercher, lire et mettre à jour du contenu Notion depuis un agent compatible.</p><a href="https://developers.notion.com/guides/mcp/overview" target="_blank" rel="noopener noreferrer">Documentation ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="cf646e61-1a06-4a98-9c84-210ce56e91b0"><div class="card-top"><h3>OpenSpec</h3><span class="type">Spécifications</span></div><p>Structurer le développement avec des spécifications adaptées aux assistants IA.</p><a href="https://github.com/Fission-AI/OpenSpec" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="context" data-tool-id="d2512147-8ca6-426d-b3bd-c4b4eb509a5e"><div class="card-top"><h3>Supabase MCP</h3><span class="type">MCP / Backend</span></div><p>Connecter des agents aux schémas, requêtes et configurations Supabase.</p><a href="https://github.com/supabase/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
         </div>
       </section>
 
       <section class="section" data-section="quality">
         <div class="section-head"><div><h2>04 · Tester, relire et sécuriser</h2><p>Vérifier le résultat généré avant de le partager ou de le déployer.</p></div><span class="count">7 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="quality"><div class="card-top"><h3>Agent QA</h3><span class="type">Tests</span></div><p>Créer et exécuter des workflows de tests web et mobile en langage naturel.</p><a href="https://github.com/vostride/agent-qa" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Playwright MCP</h3><span class="type">Navigateur</span></div><p>Automatiser le navigateur avec l’implémentation MCP maintenue par Microsoft.</p><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>PR-Agent</h3><span class="type">Revue de code</span></div><p>Obtenir de l’aide pour relire des pull requests et repérer les changements à examiner.</p><a href="https://github.com/The-PR-Agent/pr-agent" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Prbl</h3><span class="type">Sécurité</span></div><p>Scanner une application ou un dépôt pour rechercher des vulnérabilités fréquentes du code généré.</p><a href="https://getprbl.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Qodo</h3><span class="type">Qualité du code</span></div><p>Outils IA pour la revue de code et l’amélioration de la qualité logicielle.</p><a href="https://www.qodo.ai/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Semgrep MCP</h3><span class="type">Sécurité</span></div><p>Connecter les contrôles d’analyse de sécurité Semgrep aux workflows MCP.</p><a href="https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="quality"><div class="card-top"><h3>Sentry MCP</h3><span class="type">Diagnostic</span></div><p>Inspecter les erreurs d’application et aider à diagnostiquer les échecs.</p><a href="https://github.com/getsentry/sentry-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="quality" data-tool-id="d2b7cf79-a33e-4e36-b0a1-822e3ce32ad2"><div class="card-top"><h3>Agent QA</h3><span class="type">Tests</span></div><p>Créer et exécuter des workflows de tests web et mobile en langage naturel.</p><a href="https://github.com/vostride/agent-qa" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="quality" data-tool-id="9ae76921-0e8b-4046-94ef-ede8a07e486a"><div class="card-top"><h3>Playwright MCP</h3><span class="type">Navigateur</span></div><p>Automatiser le navigateur avec l’implémentation MCP maintenue par Microsoft.</p><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="quality" data-tool-id="31920b32-7303-4427-9f65-eea77f285e61"><div class="card-top"><h3>PR-Agent</h3><span class="type">Revue de code</span></div><p>Obtenir de l’aide pour relire des pull requests et repérer les changements à examiner.</p><a href="https://github.com/The-PR-Agent/pr-agent" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="quality" data-tool-id="2f0b015a-bffa-4a6c-b3fa-c213cec96ae4"><div class="card-top"><h3>Prbl</h3><span class="type">Sécurité</span></div><p>Scanner une application ou un dépôt pour rechercher des vulnérabilités fréquentes du code généré.</p><a href="https://getprbl.com/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="quality" data-tool-id="7ad80a97-f8bd-48e2-8bc9-2282575f21ac"><div class="card-top"><h3>Qodo</h3><span class="type">Qualité du code</span></div><p>Outils IA pour la revue de code et l’amélioration de la qualité logicielle.</p><a href="https://www.qodo.ai/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="quality" data-tool-id="a474f548-e078-4fcc-9694-7f2048c4520d"><div class="card-top"><h3>Semgrep MCP</h3><span class="type">Sécurité</span></div><p>Connecter les contrôles d’analyse de sécurité Semgrep aux workflows MCP.</p><a href="https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="quality" data-tool-id="5598ec49-bca1-45d0-94c2-41d7a38c667e"><div class="card-top"><h3>Sentry MCP</h3><span class="type">Diagnostic</span></div><p>Inspecter les erreurs d’application et aider à diagnostiquer les échecs.</p><a href="https://github.com/getsentry/sentry-mcp" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
         </div>
       </section>
 
       <section class="section" data-section="delivery">
         <div class="section-head"><div><h2>05 · Déployer et exécuter</h2><p>Publier le projet ou fournir un environnement d’exécution adapté.</p></div><span class="count">4 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="delivery"><div class="card-top"><h3>Cloudflare MCP</h3><span class="type">Cloud</span></div><p>Connecter des workflows agentiques aux services et ressources Cloudflare.</p><a href="https://github.com/cloudflare/mcp-server-cloudflare" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="delivery"><div class="card-top"><h3>E2B</h3><span class="type">Sandbox</span></div><p>Fournir des environnements isolés pour exécuter du code généré par des agents IA.</p><a href="https://github.com/e2b-dev/E2B" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="delivery"><div class="card-top"><h3>Publish.my</h3><span class="type">Publication</span></div><p>Publier des sites statiques avec un workflow orienté agents.</p><a href="https://publish.my/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="delivery"><div class="card-top"><h3>XcodeBuildMCP</h3><span class="type">Apple</span></div><p>Compiler, exécuter et déboguer des projets Apple avec des outils CLI et MCP.</p><a href="https://github.com/getsentry/XcodeBuildMCP" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
+          <article class="card" data-category="delivery" data-tool-id="bda9eea9-f179-41c4-a9a3-17cb1a2fc8db"><div class="card-top"><h3>Cloudflare MCP</h3><span class="type">Cloud</span></div><p>Connecter des workflows agentiques aux services et ressources Cloudflare.</p><a href="https://github.com/cloudflare/mcp-server-cloudflare" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="delivery" data-tool-id="0d2133cd-4c7f-49ea-a855-50e89f116cbf"><div class="card-top"><h3>E2B</h3><span class="type">Sandbox</span></div><p>Fournir des environnements isolés pour exécuter du code généré par des agents IA.</p><a href="https://github.com/e2b-dev/E2B" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="delivery" data-tool-id="db30b322-a887-4c19-ba6e-ee9c864da189"><div class="card-top"><h3>Publish.my</h3><span class="type">Publication</span></div><p>Publier des sites statiques avec un workflow orienté agents.</p><a href="https://publish.my/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="delivery" data-tool-id="d4532888-1f02-4263-ae8c-1f7c7cade11d"><div class="card-top"><h3>XcodeBuildMCP</h3><span class="type">Apple</span></div><p>Compiler, exécuter et déboguer des projets Apple avec des outils CLI et MCP.</p><a href="https://github.com/getsentry/XcodeBuildMCP" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
         </div>
       </section>
 
       <section class="section" data-section="ops">
         <div class="section-head"><div><h2>06 · Orchestrer les agents et les sessions</h2><p>Gérer le travail en parallèle, les espaces de travail et l’usage des modèles.</p></div><span class="count">8 outils</span></div>
         <div class="grid">
-          <article class="card" data-category="ops"><div class="card-top"><h3>Delta (Zed)</h3><span class="type">Collaboration</span></div><p>Espace de travail multijoueur pour agents de code et revue des changements.</p><a href="https://delta.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Duckweed</h3><span class="type">Desktop</span></div><p>Gérer localement des agents, shells, diffs Git et sessions de développement.</p><a href="https://github.com/MusicMaster4/Duckweed" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>llm.log</h3><span class="type">Observabilité</span></div><p>Inspecter les coûts, tokens et traces de requêtes de modèles via un proxy local.</p><a href="https://github.com/lanesket/llm.log" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Parallel Code</h3><span class="type">Git / Agents</span></div><p>Exécuter des agents en parallèle dans des worktrees Git isolés et comparer leurs changements.</p><a href="https://github.com/johannesjo/parallel-code" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Shep</h3><span class="type">Orchestration</span></div><p>Orchestrer des agents dans des worktrees isolés, jusqu’au commit et au brouillon de pull request.</p><a href="https://github.com/shep-ai/shep" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>Superagent</h3><span class="type">macOS</span></div><p>Espace de travail desktop pour utiliser Claude Code ou Codex, avec outils navigateur et iOS.</p><a href="https://github.com/pungme/superagent-desktop" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>usage</h3><span class="type">Suivi</span></div><p>Consulter des quotas d’agents de code depuis la barre de menu ou la zone de notification.</p><a href="https://github.com/aqua5230/usage" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a></article>
-          <article class="card" data-category="ops"><div class="card-top"><h3>VDLC</h3><span class="type">Méthode</span></div><p>Cycle de développement qui place l’intention, le contexte et la validation humaine au centre.</p><a href="https://vdlc.roboco.io/" target="_blank" rel="noopener noreferrer">Guide officiel ↗</a></article>
+          <article class="card" data-category="ops" data-tool-id="3406d952-d4cc-460b-987c-5463e3643953"><div class="card-top"><h3>Delta (Zed)</h3><span class="type">Collaboration</span></div><p>Espace de travail multijoueur pour agents de code et revue des changements.</p><a href="https://delta.dev/" target="_blank" rel="noopener noreferrer">Site officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="8d62a7e9-fb46-4cc9-927e-ddd4dbf8585c"><div class="card-top"><h3>Duckweed</h3><span class="type">Desktop</span></div><p>Gérer localement des agents, shells, diffs Git et sessions de développement.</p><a href="https://github.com/MusicMaster4/Duckweed" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="b3b7450c-5a90-4fc6-a878-64fcc5f0eac1"><div class="card-top"><h3>llm.log</h3><span class="type">Observabilité</span></div><p>Inspecter les coûts, tokens et traces de requêtes de modèles via un proxy local.</p><a href="https://github.com/lanesket/llm.log" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="6b4fdeb3-bc52-4b9d-aeb9-457adcc38a38"><div class="card-top"><h3>Parallel Code</h3><span class="type">Git / Agents</span></div><p>Exécuter des agents en parallèle dans des worktrees Git isolés et comparer leurs changements.</p><a href="https://github.com/johannesjo/parallel-code" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="a894c5f0-d186-4ab9-a76f-fc2e3305ef3a"><div class="card-top"><h3>Shep</h3><span class="type">Orchestration</span></div><p>Orchestrer des agents dans des worktrees isolés, jusqu’au commit et au brouillon de pull request.</p><a href="https://github.com/shep-ai/shep" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="7b033353-74d0-4f10-84a4-16f39f24a5ff"><div class="card-top"><h3>Superagent</h3><span class="type">macOS</span></div><p>Espace de travail desktop pour utiliser Claude Code ou Codex, avec outils navigateur et iOS.</p><a href="https://github.com/pungme/superagent-desktop" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="cf54e409-46e9-40e3-b56c-3e04a02b8a2e"><div class="card-top"><h3>usage</h3><span class="type">Suivi</span></div><p>Consulter des quotas d’agents de code depuis la barre de menu ou la zone de notification.</p><a href="https://github.com/aqua5230/usage" target="_blank" rel="noopener noreferrer">Projet GitHub ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
+          <article class="card" data-category="ops" data-tool-id="8afc930d-a93e-4291-86e7-bf88d9d88bd3"><div class="card-top"><h3>VDLC</h3><span class="type">Méthode</span></div><p>Cycle de développement qui place l’intention, le contexte et la validation humaine au centre.</p><a href="https://vdlc.roboco.io/" target="_blank" rel="noopener noreferrer">Guide officiel ↗</a><div class="card-actions"><button class="tool-action edit-tool" type="button" disabled>Modifier la fiche</button><button class="tool-action add-comment" type="button" disabled>Ajouter un commentaire</button></div></article>
         </div>
       </section>
       <p class="empty" id="empty">Aucun outil ne correspond à cette recherche. Essayez un autre terme ou filtre.</p>
@@ -172,7 +172,26 @@
       </section>
     </div>
   </main>
-  <footer><div class="wrap">© 2026 Codex Prime · <a href="./">Accueil</a> · Les marques et outils cités appartiennent à leurs propriétaires respectifs.</div></footer>
+
+  <dialog class="tool-dialog" id="tool-dialog">
+    <h2>Modifier la fiche</h2>
+    <form class="tool-form" id="tool-form">
+      <label>Nom<input name="name" maxlength="200" required></label>
+      <label>Catégorie<select name="category"><option value="app">Créer une app</option><option value="code">Coder</option><option value="context">Contexte & intégrations</option><option value="quality">Tester & sécuriser</option><option value="delivery">Déployer</option><option value="ops">Orchestrer</option></select></label>
+      <label>Type<input name="type" maxlength="120" required></label>
+      <label>Description<textarea name="description" maxlength="5000" required></textarea></label>
+      <label>URL (http/https)<input name="link_url" type="url" maxlength="2048" required></label>
+      <label>Texte du lien<input name="link_label" maxlength="200" required></label>
+      <label>Champs personnalisés (JSON)<textarea name="custom_fields" spellcheck="false" required></textarea></label>
+      <p class="small">Le JSON conserve les types natifs : booléens, nombres, dates (chaînes ISO), listes et objets. Exemple : {"enabled":true,"date":"2026-11-23","tags":["IA","code"]}</p>
+      <p class="admin-message" id="form-message" role="status"></p>
+      <div class="dialog-actions"><button class="tool-action" type="button" data-close>Annuler</button><button class="admin-action" type="submit">Enregistrer</button></div>
+    </form>
+  </dialog>
+  <dialog class="tool-dialog" id="comment-dialog">
+    <h2>Commentaires de l’outil</h2><div class="comments-list" id="comments-list"></div>
+    <form class="tool-form" id="comment-form"><label>Nouveau commentaire<textarea name="text" maxlength="5000" required></textarea></label><p class="admin-message" id="comment-message" role="status"></p><div class="dialog-actions"><button class="tool-action" type="button" data-close>Fermer</button><button class="admin-action" type="submit">Ajouter le commentaire</button></div></form>
+  </dialog>\n  <footer><div class="wrap">© 2026 Codex Prime · <a href="./">Accueil</a> · Les marques et outils cités appartiennent à leurs propriétaires respectifs.</div></footer>
   <script>
     (() => {
       const search = document.getElementById('search');
@@ -204,5 +223,133 @@
       search.addEventListener('input', update);
     })();
   </script>
-</body>
+
+  <script>
+  (() => {
+    "use strict";
+    // Renseigner l'URL workers.dev après le déploiement. Vide = édition désactivée.
+    const API_BASE_URL = "";
+    const apiReady = /^https:\/\//i.test(API_BASE_URL);
+    const cards = [...document.querySelectorAll('.card[data-tool-id]')];
+    const statusBox = document.getElementById('admin-status');
+    const editDialog = document.getElementById('tool-dialog');
+    const commentDialog = document.getElementById('comment-dialog');
+    const form = document.getElementById('tool-form');
+    const commentForm = document.getElementById('comment-form');
+    const states = new Map();
+    let adminEnabled = false, currentEditId = null, currentCommentId = null;
+    const staticTools = cards.map(card => ({
+      toolId: card.dataset.toolId, name: card.querySelector('h3').textContent,
+      category: card.dataset.category, type: card.querySelector('.type').textContent,
+      description: card.querySelector('p').textContent, link_url: card.querySelector('a').href,
+      link_label: card.querySelector('a').textContent, custom_fields: {}
+    }));
+    function status(message, initButton) {
+      statusBox.replaceChildren(document.createTextNode(message));
+      if (initButton) {
+        const button = document.createElement('button'); button.type = 'button';
+        button.className = 'admin-action'; button.textContent = 'Initialiser les fiches manquantes dans R2';
+        button.addEventListener('click', initializeMissing); statusBox.append(button);
+      }
+    }
+    async function api(path, options={}) {
+      const response = await fetch(API_BASE_URL + path, {
+        ...options, credentials: 'include',
+        headers: {...(options.headers||{}), ...(options.body ? {'content-type':'application/json'} : {})}
+      });
+      const data = await response.json().catch(()=>({}));
+      if (!response.ok) { const e=new Error(data.message||data.error||('HTTP '+response.status));e.status=response.status;throw e; }
+      return data;
+    }
+    function enableButtons(enabled) {
+      cards.forEach(card=>card.querySelectorAll('.tool-action').forEach(button=>button.disabled=!enabled));
+    }
+    function render(card, tool, comments) {
+      card.dataset.category = tool.category;
+      card.querySelector('h3').textContent = tool.name;
+      card.querySelector('.type').textContent = tool.type;
+      card.querySelector('p').textContent = tool.description;
+      const link=card.querySelector('a');link.textContent=tool.link_label;link.href=tool.link_url;
+      link.target='_blank';link.rel='noopener noreferrer';
+      card.querySelector('.add-comment').textContent='Ajouter un commentaire ('+comments.length+')';
+      states.set(tool.toolId,{tool:structuredClone(tool),comments:structuredClone(comments)});
+    }
+    async function initializeMissing() {
+      if (!adminEnabled) return;
+      const button=statusBox.querySelector('button');if(button)button.disabled=true;
+      try {
+        const result=await api('/api/admin/initialize',{method:'POST',body:JSON.stringify({tools:staticTools})});
+        status('Initialisation : '+result.created+' créée(s), '+result.skipped+' déjà présente(s) préservée(s).',false);
+        await load();
+      } catch(e) { status('Initialisation refusée : '+e.message,false);if(button)button.disabled=false; }
+    }
+    async function load() {
+      if(!apiReady){status('API non configurée. Catalogue statique visible ; modifications désactivées.');enableButtons(false);return;}
+      try {
+        const state=await api('/api/status');adminEnabled=state.adminEnabled===true;
+        const data=await api('/api/tools');
+        for(const tool of data.tools||[]){
+          const card=cards.find(c=>c.dataset.toolId===tool.toolId);
+          if(card)render(card,tool,tool.comments||[]);
+        }
+        enableButtons(adminEnabled);
+        status(adminEnabled?'API connectée. Les écritures restent vérifiées par Cloudflare Access côté serveur.':'Lecture disponible ; modifications désactivées car Cloudflare Access n’est pas configuré.',adminEnabled);
+      } catch(e){enableButtons(false);status('Lecture distante indisponible : '+e.message+'. Modifications désactivées.');}
+    }
+    function openEdit(tool) {
+      currentEditId=tool.toolId;
+      for(const key of ['name','category','type','description','link_url','link_label'])form.elements[key].value=tool[key];
+      form.elements.custom_fields.value=JSON.stringify(tool.custom_fields||{},null,2);
+      document.getElementById('form-message').textContent='';
+      editDialog.showModal();
+    }
+    cards.forEach(card=>{
+      card.querySelector('.edit-tool').addEventListener('click',()=>{
+        const state=states.get(card.dataset.toolId);if(state)openEdit(state.tool);
+      });
+      card.querySelector('.add-comment').addEventListener('click',()=>{
+        const state=states.get(card.dataset.toolId);if(!state)return;
+        currentCommentId=card.dataset.toolId;
+        const list=document.getElementById('comments-list');list.replaceChildren();
+        state.comments.forEach(comment=>{
+          const item=document.createElement('div');item.className='comment-item';
+          const body=document.createElement('div');body.textContent=comment.text;
+          const date=document.createElement('div');date.className='comment-date';date.textContent=comment.createdAt||'';
+          item.append(body,date);list.append(item);
+        });
+        commentForm.reset();document.getElementById('comment-message').textContent='';commentDialog.showModal();
+      });
+    });
+    form.addEventListener('submit',async event=>{
+      event.preventDefault();const message=document.getElementById('form-message');
+      const submit=form.querySelector('[type=submit]');submit.disabled=true;message.textContent='';
+      try {
+        const state=states.get(currentEditId);if(!state)throw Error('Fiche introuvable.');
+        let custom;try{custom=JSON.parse(form.elements.custom_fields.value);}catch{throw Error('Les champs personnalisés doivent être un JSON valide.');}
+        if(!custom||typeof custom!=='object'||Array.isArray(custom))throw Error('Les champs personnalisés doivent former un objet JSON.');
+        const tool={toolId:currentEditId,name:form.elements.name.value.trim(),category:form.elements.category.value,type:form.elements.type.value.trim(),description:form.elements.description.value.trim(),link_url:form.elements.link_url.value.trim(),link_label:form.elements.link_label.value.trim(),custom_fields:custom};
+        let url;try{url=new URL(tool.link_url);}catch{throw Error('URL invalide.');}
+        if(!['http:','https:'].includes(url.protocol))throw Error('Seules les URL http et https sont autorisées.');
+        if(!tool.name||tool.name.length>200||!tool.type||tool.type.length>120||tool.description.length>5000||tool.link_url.length>2048||tool.link_label.length>200)throw Error('Un champ obligatoire est vide ou dépasse sa longueur maximale.');
+        const result=await api('/api/admin/tools/'+encodeURIComponent(currentEditId),{method:'PUT',body:JSON.stringify({expectedVersion:state.tool.version,tool})});
+        const card=cards.find(c=>c.dataset.toolId===currentEditId);render(card,result.tool,state.comments);
+        const target=document.querySelector('[data-section="'+result.tool.category+'"] .grid');if(target)target.append(card);
+        editDialog.close();status('Fiche enregistrée dans R2.'); 
+      } catch(e) {message.textContent=e.status===409?'Conflit de version : une autre modification existe. Recharge la page et recommence.':e.message;}
+      finally{submit.disabled=false;}
+    });
+    commentForm.addEventListener('submit',async event=>{
+      event.preventDefault();const message=document.getElementById('comment-message');const submit=commentForm.querySelector('[type=submit]');submit.disabled=true;
+      try{
+        const text=commentForm.elements.text.value.trim();if(!text||text.length>5000)throw Error('Commentaire requis (5000 caractères maximum).');
+        const result=await api('/api/admin/tools/'+encodeURIComponent(currentCommentId)+'/comments',{method:'POST',body:JSON.stringify({text})});
+        const state=states.get(currentCommentId);state.comments.push(result.comment);
+        const card=cards.find(c=>c.dataset.toolId===currentCommentId);render(card,state.tool,state.comments);
+        commentDialog.close();status('Commentaire enregistré dans un objet R2 séparé.');
+      }catch(e){message.textContent=e.message;}finally{submit.disabled=false;}
+    });
+    document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
+    load();
+  })();
+  </script>\n</body>
 </html>
