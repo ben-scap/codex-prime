@@ -46,7 +46,8 @@ const env = {
   OUTILS_BUCKET: bucket,
   ALLOWED_ORIGIN: "https://ben-scap.github.io",
   ACCESS_TEAM_DOMAIN: team,
-  ACCESS_AUD: audience
+  ACCESS_AUD: audience,
+  ACCESS_APP_CONFIGURED: "true"
 };
 const A = {
   toolId: "tool-a-uuid", name: "Outil A", category: "app", type: "Web",
