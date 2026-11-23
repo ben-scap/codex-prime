@@ -136,7 +136,18 @@ export default {
     if (!origin) return json({ error: "Origin non autorisée." }, 403, null, env);
     if (!env.OUTILS_BUCKET) return json({ error: "Liaison R2 OUTILS_BUCKET absente." }, 503, origin, env);
     const url = new URL(request.url);
-    const path = url.pathname.replace(/\/+$/, "") || "/";
+    let path = url.pathname.replace(/\\/+$/, "") || "/";
+    // Routes françaises demandées pour le catalogue public.
+    const frenchCommentsMatch = path.match(/^\\/api\\/outils\\/([a-zA-Z0-9_-]{1,100})\\/commentaires$/);
+    const frenchToolMatch = path.match(/^\\/api\\/outils\\/([a-zA-Z0-9_-]{1,100})$/);
+    if (request.method === "GET" && frenchCommentsMatch) {
+      const tool = await getTool(env.OUTILS_BUCKET, frenchCommentsMatch[1]);
+      return tool ? json({ commentaires: tool.comments }, 200, origin, env) : json({ error: "Fiche introuvable." }, 404, origin, env);
+    }
+    if (request.method === "PUT" && frenchToolMatch) path = "/api/admin/tools/" + frenchToolMatch[1];
+    if (request.method === "POST" && frenchCommentsMatch) path = "/api/admin/tools/" + frenchCommentsMatch[1] + "/comments";
+    if (path === "/api/outils") path = "/api/tools";
+    if (request.method === "GET" && frenchToolMatch) path = "/api/tools/" + frenchToolMatch[1];
     if (request.method === "GET" && path === "/api/status") {
       return json({ adminEnabled: accessReady(env) }, 200, origin, env);
     }
