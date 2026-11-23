@@ -101,28 +101,31 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
       link_label: "Nouveau lien",
       custom_fields: { active: true, releaseDate: "2026-11-23", tags: ["ia", "code"], score: 4 }
     };
-    response = await call("PUT", "/api/admin/tools/tool-a-uuid", { expectedVersion: 1, tool: updatedA });
+    response = await call("PUT", "/api/outils/tool-a-uuid", { expectedVersion: 1, tool: updatedA });
     assert.equal(response.status, 200);
     let result = await response.json();
     assert.equal(result.tool.version, 2);
     assert.deepEqual(result.tool.custom_fields, updatedA.custom_fields);
 
-    response = await call("POST", "/api/admin/tools/tool-a-uuid/comments", { text: "Commentaire propre à A" });
+    response = await call("POST", "/api/outils/tool-a-uuid/commentaires", { text: "Commentaire propre à A" });
     assert.equal(response.status, 201);
     assert.ok(await bucket.get("comments/tool-a-uuid/" + (await response.clone().json()).comment.commentId + ".json"));
+    response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
+    assert.equal(response.status, 200);
+    assert.equal((await response.json()).commentaires.length, 1);
 
-    response = await call("PUT", "/api/admin/tools/tool-a-uuid", {
+    response = await call("PUT", "/api/outils/tool-a-uuid", {
       expectedVersion: 2, tool: { ...updatedA, link_url: "https://a-final.example/" }
     });
     assert.equal(response.status, 200);
     assert.equal((await response.json()).tool.version, 3);
 
-    response = await call("PUT", "/api/admin/tools/tool-a-uuid", {
+    response = await call("PUT", "/api/outils/tool-a-uuid", {
       expectedVersion: 3, tool: { ...updatedA, link_url: "javascript:alert(1)" }
     });
     assert.equal(response.status, 422);
 
-    response = await call("PUT", "/api/admin/tools/tool-a-uuid", {
+    response = await call("PUT", "/api/outils/tool-a-uuid", {
       expectedVersion: 1, tool: updatedA
     });
     assert.equal(response.status, 409);
@@ -133,7 +136,7 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     }), env);
     assert.equal(noAuth.status, 401);
 
-    response = await call("GET", "/api/tools", undefined, false);
+    response = await call("GET", "/api/outils", undefined, false);
     assert.equal(response.status, 200);
     const catalog = await response.json();
     const savedA = catalog.tools.find(item => item.toolId === "tool-a-uuid");
