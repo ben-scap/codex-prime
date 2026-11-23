@@ -229,8 +229,8 @@
   <script>
   (() => {
     "use strict";
-    // Renseigner l'URL workers.dev après le déploiement. Vide = édition désactivée.
-    const API_BASE_URL = "";
+    // API Cloudflare Worker de Codex Prime.
+    const API_BASE_URL = "https://codex-prime-api.toupe-benoit.workers.dev";
     const apiReady = /^https:\/\//i.test(API_BASE_URL);
     const cards = [...document.querySelectorAll('.card[data-tool-id]')];
     const statusBox = document.getElementById('admin-status');
