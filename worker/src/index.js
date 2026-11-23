@@ -58,7 +58,7 @@ async function verifyAccess(request, env) {
   const token = request.headers.get("Cf-Access-Jwt-Assertion");
   if (!token) return false;
   try {
-    const team = env.ACCESS_TEAM_DOMAIN.replace(/^https?:\\/\\//, "").replace(/\\/$/, "");
+    const team = env.ACCESS_TEAM_DOMAIN.replace(/^https?:\/\//, "").replace(/\/$/, "");
     const issuer = `https://${team}`;
     const parts = token.split(".");
     if (parts.length !== 3) return false;
@@ -133,7 +133,7 @@ export default {
     if (!origin) return json({ error: "Origin non autorisée." }, 403, null, env);
     if (!env.OUTILS_BUCKET) return json({ error: "Liaison R2 OUTILS_BUCKET absente." }, 503, origin, env);
     const url = new URL(request.url);
-    const path = url.pathname.replace(/\\/+$/, "") || "/";
+    const path = url.pathname.replace(/\/+$/, "") || "/";
     if (request.method === "GET" && path === "/api/status") {
       return json({ adminEnabled: Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD) }, 200, origin, env);
     }
@@ -141,7 +141,7 @@ export default {
       const keys = await listAll(env.OUTILS_BUCKET, TOOL_PREFIX);
       const result = [];
       for (const item of keys) {
-        const id = item.key.slice(TOOL_PREFIX.length).replace(/\\.json$/, "");
+        const id = item.key.slice(TOOL_PREFIX.length).replace(/\.json$/, "");
         if (validId(id)) {
           const tool = await getTool(env.OUTILS_BUCKET, id);
           if (tool) result.push(tool);
@@ -149,7 +149,7 @@ export default {
       }
       return json({ tools: result }, 200, origin, env);
     }
-    const toolMatch = path.match(/^\\/api\\/tools\\/([a-zA-Z0-9_-]{1,100})$/);
+    const toolMatch = path.match(/^\/api\/tools\/([a-zA-Z0-9_-]{1,100})$/);
     if (request.method === "GET" && toolMatch) {
       const tool = await getTool(env.OUTILS_BUCKET, toolMatch[1]);
       return tool ? json({ tool }, 200, origin, env) : json({ error: "Fiche introuvable." }, 404, origin, env);
@@ -162,10 +162,15 @@ export default {
       let body;
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
       if (!Array.isArray(body.tools) || body.tools.length > MAX_TOOLS) return json({ error: "Liste initiale invalide." }, 422, origin, env);
-      let created = 0, skipped = 0;
+      const uniqueIds = new Set();
       for (const tool of body.tools) {
         const id = tool?.toolId;
-        if (!validTool(tool, id)) return json({ error: "Une fiche initiale est invalide.", toolId: id || null }, 422, origin, env);
+        if (!validTool(tool, id) || uniqueIds.has(id)) return json({ error: "Une fiche initiale est invalide ou possède un identifiant en double.", toolId: id || null }, 422, origin, env);
+        uniqueIds.add(id);
+      }
+      let created = 0, skipped = 0;
+      for (const tool of body.tools) {
+        const id = tool.toolId;
         const key = TOOL_PREFIX + id + ".json";
         const existing = await env.OUTILS_BUCKET.get(key);
         if (existing) { skipped++; continue; }
@@ -174,7 +179,7 @@ export default {
       }
       return json({ ok: true, created, skipped }, 200, origin, env);
     }
-    const editMatch = path.match(/^\\/api\\/admin\\/tools\\/([a-zA-Z0-9_-]{1,100})$/);
+    const editMatch = path.match(/^\/api\/admin\/tools\/([a-zA-Z0-9_-]{1,100})$/);
     if (request.method === "PUT" && editMatch) {
       const id = editMatch[1];
       let body;
@@ -187,10 +192,14 @@ export default {
       const tool = body.tool;
       if (!validTool(tool, id)) return json({ error: "Fiche invalide : vérifiez les champs, les types et l'URL http/https." }, 422, origin, env);
       const updated = { ...tool, version: current.version + 1, updatedAt: new Date().toISOString() };
-      await env.OUTILS_BUCKET.put(key, JSON.stringify(updated), { httpMetadata: { contentType: "application/json; charset=utf-8" } });
+      const stored = await env.OUTILS_BUCKET.put(key, JSON.stringify(updated), {
+        onlyIf: { etagMatches: currentObj.etag },
+        httpMetadata: { contentType: "application/json; charset=utf-8" }
+      });
+      if (!stored) return json({ error: "CONFLICT", message: "La fiche a changé pendant l'enregistrement. Rechargez-la." }, 409, origin, env);
       return json({ ok: true, tool: updated }, 200, origin, env);
     }
-    const commentMatch = path.match(/^\\/api\\/admin\\/tools\\/([a-zA-Z0-9_-]{1,100})\\/comments$/);
+    const commentMatch = path.match(/^\/api\/admin\/tools\/([a-zA-Z0-9_-]{1,100})\/comments$/);
     if (request.method === "POST" && commentMatch) {
       const id = commentMatch[1];
       const toolObj = await env.OUTILS_BUCKET.get(TOOL_PREFIX + id + ".json");
