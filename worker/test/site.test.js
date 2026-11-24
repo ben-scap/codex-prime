@@ -27,4 +27,7 @@ test("la page conserve les 43 outils, leurs champs et les actions de fiche/comme
   assert.ok(html.includes("addComment: id => '/api/admin/tools/'+encodeURIComponent(id)+'/comments'"));
   assert.ok(html.includes('enableButtons(true)'));
   assert.ok(html.includes('commentSubmit.disabled=!adminEnabled'));
+  assert.ok(html.includes("Se connecter à l’administration"));
+  assert.ok(html.includes("function loginAdmin()"));
+  assert.ok(html.includes("/api/admin/login?return="));
 });
