@@ -97,16 +97,40 @@ async function listAll(bucket, prefix) {
 }
 async function getTool(bucket, id) {
   const obj = await bucket.get(TOOL_PREFIX + id + ".json");
-  if (!obj) return null;
-  const tool = await obj.json();
-  const comments = [];
-  const keys = await listAll(bucket, COMMENT_PREFIX + id + "/");
-  for (const key of keys) {
-    const commentObj = await bucket.get(key.key);
-    if (commentObj) comments.push(await commentObj.json());
-  }
-  comments.sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
-  return { ...tool, comments };
+  return obj ? obj.json() : null;
+}
+function encodeCursor(value) {
+  return encodeURIComponent(JSON.stringify(value));
+}
+function decodeCursor(value) {
+  if (!value) return null;
+  try {
+    const parsed = JSON.parse(value);
+    if (!parsed || typeof parsed.createdAt !== "string" || typeof parsed.id !== "string") return null;
+    return parsed;
+  } catch { return null; }
+}
+function commentView(row) {
+  return {
+    commentId: row.id, toolId: row.outil_id, text: row.texte,
+    author: row.auteur, createdAt: row.cree_le,
+    id: row.id, outil_id: row.outil_id, texte: row.texte, auteur: row.auteur, cree_le: row.cree_le
+  };
+}
+async function listD1Comments(db, toolId, cursor) {
+  const limit = 20;
+  const statement = cursor
+    ? db.prepare("SELECT id, outil_id, texte, auteur, cree_le FROM commentaires WHERE outil_id = ? AND (cree_le < ? OR (cree_le = ? AND id < ?)) ORDER BY cree_le DESC, id DESC LIMIT ?").bind(toolId, cursor.createdAt, cursor.createdAt, cursor.id, limit + 1)
+    : db.prepare("SELECT id, outil_id, texte, auteur, cree_le FROM commentaires WHERE outil_id = ? ORDER BY cree_le DESC, id DESC LIMIT ?").bind(toolId, limit + 1);
+  const result = await statement.all();
+  const rows = result.results || [];
+  const hasMore = rows.length > limit;
+  const page = rows.slice(0, limit);
+  const last = page[page.length - 1];
+  return {
+    commentaires: page.map(commentView),
+    pagination: { limit, hasMore, nextCursor: hasMore && last ? encodeCursor({ createdAt: last.cree_le, id: last.id }) : null }
+  };
 }
 function accessReady(env) {
   return env.ACCESS_APP_CONFIGURED === "true" && Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD);
@@ -155,7 +179,12 @@ export default {
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
     if (request.method === "GET" && frenchCommentsMatch) {
       const tool = await getTool((env.DATA || env.OUTILS_BUCKET), frenchCommentsMatch[1]);
-      return tool ? json({ commentaires: tool.comments }, 200, origin, env) : json({ error: "Fiche introuvable." }, 404, origin, env);
+      if (!tool) return json({ error: "Fiche introuvable." }, 404, origin, env);
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const cursor = decodeCursor(url.searchParams.get("cursor"));
+      if (url.searchParams.has("cursor") && !cursor) return json({ error: "Curseur de pagination invalide." }, 400, origin, env);
+      const result = await listD1Comments(env.DB, frenchCommentsMatch[1], cursor);
+      return json(result, 200, origin, env);
     }
     if (request.method === "PUT" && frenchToolMatch) path = "/api/admin/tools/" + frenchToolMatch[1];
     if (request.method === "POST" && frenchCommentsMatch) path = "/api/admin/tools/" + frenchCommentsMatch[1] + "/comments";
@@ -237,13 +266,23 @@ export default {
       let body;
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
       if (typeof body.text !== "string" || !body.text.trim() || body.text.length > 5000) return json({ error: "Commentaire vide ou trop long (5000 caractères maximum)." }, 422, origin, env);
-      const existingComments = await listAll((env.DATA || env.OUTILS_BUCKET), COMMENT_PREFIX + id + "/");
-      if (existingComments.length >= MAX_COMMENTS) return json({ error: "Nombre maximal de commentaires atteint." }, 429, origin, env);
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const auteur = typeof body.auteur === "string" && body.auteur.trim() ? body.auteur.trim().slice(0, 120) : "Utilisateur";
       const commentId = crypto.randomUUID();
-      const comment = { commentId, toolId: id, text: body.text.trim(), createdAt: new Date().toISOString() };
-      await (env.DATA || env.OUTILS_BUCKET).put(COMMENT_PREFIX + id + "/" + commentId + ".json", JSON.stringify(comment), { httpMetadata: { contentType: "application/json; charset=utf-8" } });
+      const creeLe = new Date().toISOString();
+      await env.DB.prepare("INSERT INTO commentaires (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
+        .bind(commentId, id, body.text.trim(), auteur, creeLe).run();
+      const comment = { commentId, toolId: id, text: body.text.trim(), author: auteur, createdAt: creeLe };
       return json({ ok: true, comment }, 201, origin, env);
     }
     return json({ error: "Route introuvable." }, 404, origin, env);
+  },
+  async scheduled(event, env, ctx) {
+    if (!env.DB) throw new Error("Liaison D1 DB absente.");
+    const cutoff = new Date();
+    cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
+    const result = await env.DB.prepare("DELETE FROM commentaires WHERE cree_le < ?")
+      .bind(cutoff.toISOString()).run();
+    return result;
   }
 };
