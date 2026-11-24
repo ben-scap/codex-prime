@@ -164,7 +164,7 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     response = await call("POST", "/api/outils/tool-a-uuid/commentaires", { text: "Commentaire propre à A" });
     assert.equal(response.status, 201);
     const createdComment = (await response.clone().json()).comment;
-    assert.equal(db.rows.length, 22);
+    assert.equal(db.rows.length, 1);
     assert.equal(db.rows[0].texte, "Commentaire propre à A");
     assert.equal(await bucket.get("comments/tool-a-uuid/" + createdComment.commentId + ".json"), null);
     response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
@@ -220,7 +220,7 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     assert.equal(savedA.link_url, "https://a-final.example/");
     assert.equal("comments" in savedB, false);
     assert.equal(savedB.description, "Description B");
-    assert.equal(db.rows.length, 1);
+    assert.equal(db.rows.length, 22);
   } finally {
     globalThis.fetch = originalFetch;
   }
