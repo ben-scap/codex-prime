@@ -11,8 +11,19 @@ jobs:
     name: Required tests before deployment
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout production branch
         uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Reject non-production dispatch
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          if [ "$REF" != "refs/heads/main" ]; then
+            echo "::error::Le déploiement du Worker est autorisé uniquement depuis main."
+            exit 1
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -21,11 +32,30 @@ jobs:
           cache: npm
           cache-dependency-path: worker/package-lock.json
 
+      - name: Verify Worker paths and lockfile
+        working-directory: worker
+        run: |
+          test -f src/index.js
+          test -f wrangler.jsonc
+          test -f package.json
+          test -f package-lock.json
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          const lock = JSON.parse(fs.readFileSync("package-lock.json", "utf8"));
+          const config = JSON.parse(fs.readFileSync("wrangler.jsonc", "utf8"));
+          if (pkg.name !== "codex-prime-api" || lock.name !== pkg.name) throw new Error("package.json/package-lock.json incohérents");
+          if (lock.lockfileVersion !== 3) throw new Error("lockfileVersion 3 attendu");
+          if (config.main !== "src/index.js" || config.name !== "codex-prime-api") throw new Error("Configuration Wrangler invalide");
+          console.log("Chemins, package-lock.json et configuration Wrangler vérifiés.");
+          NODE
+          node --check src/index.js
+
       - name: Install locked dependencies
         working-directory: worker
         run: npm ci
 
-      - name: Run tests
+      - name: Run Worker tests
         working-directory: worker
         run: npm test
 
@@ -36,8 +66,10 @@ jobs:
     environment:
       name: production
     steps:
-      - name: Checkout
+      - name: Checkout production branch
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
