@@ -287,6 +287,63 @@ export default {
       }
       return json({ ok: true, created, skipped }, 200, origin, env);
     }
+    if (request.method === "POST" && path === "/api/admin/import-r2-fiches") {
+      let body;
+      try { body = await readJson(request); } catch (e) {
+        return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env);
+      }
+      if (!body || !["preview", "apply"].includes(body.mode)) {
+        return json({ error: "Mode attendu : preview ou apply." }, 422, origin, env);
+      }
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const bucket = env.DATA || env.OUTILS_BUCKET;
+      const keys = await listAll(bucket, TOOL_PREFIX);
+      let scanned = 0, valid = 0, invalid = 0, imported = 0, alreadyPresent = 0, slugConflicts = 0;
+      for (const item of keys) {
+        scanned++;
+        try {
+          const match = item.key.match(/^tools\/([a-zA-Z0-9_-]{1,100})\.json$/);
+          if (!match) { invalid++; continue; }
+          const id = match[1];
+          const object = await bucket.get(item.key);
+          if (!object) continue;
+          const tool = await object.json();
+          const titre = typeof tool.name === "string" ? tool.name.trim() : "";
+          const description = typeof tool.description === "string" ? tool.description : "";
+          const categorie = typeof tool.category === "string" ? tool.category : "";
+          const version = Number.isSafeInteger(tool.version) && tool.version > 0 ? tool.version : 1;
+          const updatedAt = typeof tool.updatedAt === "string" && Number.isFinite(Date.parse(tool.updatedAt))
+            ? new Date(tool.updatedAt).toISOString()
+            : new Date().toISOString();
+          if (tool.toolId !== id || !titre || titre.length > 200 || description.length > 5000 ||
+              !/^(app|code|context|quality|delivery|ops)$/.test(categorie)) {
+            invalid++; continue;
+          }
+          valid++;
+          const existing = await env.DB.prepare("SELECT id, slug FROM fiches WHERE id = ? OR slug = ? LIMIT 1")
+            .bind(id, id).first();
+          if (existing) {
+            if (existing.id === id && existing.slug === id) alreadyPresent++;
+            else slugConflicts++;
+            continue;
+          }
+          if (body.mode === "preview") continue;
+          const result = await env.DB.prepare(
+            "INSERT OR IGNORE INTO fiches (id, slug, titre, description, categorie, auteur_email, version, updated_at) VALUES (?, ?, ?, ?, ?, NULL, ?, ?)"
+          ).bind(id, id, titre, description, categorie, version, updatedAt).run();
+          if (result.meta?.changes) imported++;
+          else alreadyPresent++;
+        } catch { invalid++; }
+      }
+      return json({
+        ok: true, mode: body.mode, scanned, valid, invalid,
+        imported, alreadyPresent, slugConflicts,
+        r2ObjectsDeleted: 0,
+        message: body.mode === "preview"
+          ? "Aucune écriture effectuée. Les identifiants R2 seront conservés comme id et slug dans D1."
+          : "Import terminé. Aucun objet R2 n'a été supprimé."
+      }, 200, origin, env);
+    }
     if (request.method === "POST" && path === "/api/admin/import-r2-comments") {
       let body;
       try { body = await readJson(request); } catch (e) {
