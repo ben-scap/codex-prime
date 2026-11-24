@@ -401,6 +401,7 @@
           status('Lecture des commentaires impossible : '+e.message,false);return;
         }
         appendCommentRows(state.comments);
+        card.querySelector('.add-comment').textContent='Ajouter un commentaire ('+state.comments.length+')';
         addOlderCommentsButton();
         commentForm.reset();
         const commentSubmit=commentForm.querySelector('[type=submit]');
