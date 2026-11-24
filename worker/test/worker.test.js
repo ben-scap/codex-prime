@@ -12,7 +12,8 @@ async function makeToken() {
   const header = b64(JSON.stringify({ alg: "RS256", typ: "JWT", kid: "test-key" }));
   const payload = b64(JSON.stringify({
     iss: "https://" + team, aud: [audience],
-    exp: Math.floor(Date.now() / 1000) + 300
+    exp: Math.floor(Date.now() / 1000) + 300,
+    email: "test@example.com"
   }));
   const input = header + "." + payload;
   const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", privateKey, encoder.encode(input));
@@ -20,12 +21,25 @@ async function makeToken() {
 }
 
 class MemoryD1 {
-  constructor() { this.rows = []; }
+  constructor() { this.rows = []; this.relationalRows = []; this.fiches = new Set(["tool-a-uuid", "tool-b-uuid"]); this.nextCommentId = 1; }
   prepare(sql) {
     const db = this;
     return { bind(...values) {
       return {
+        async first() {
+          if (sql.includes("FROM fiches")) return db.fiches.has(values[0]) ? { id: values[0] } : null;
+          return null;
+        },
         async all() {
+          if (sql.includes("FROM commentaires WHERE fiche_id = ?")) {
+            let rows = db.relationalRows.filter(row => row.fiche_id === values[0]);
+            if (sql.includes("created_at < ?")) {
+              const [, createdAt, , id] = values;
+              rows = rows.filter(row => row.created_at < createdAt || (row.created_at === createdAt && row.id < Number(id)));
+            }
+            rows.sort((a, b) => b.created_at.localeCompare(a.created_at) || b.id - a.id);
+            return { results: rows.slice(0, values[values.length - 1]) };
+          }
           let rows = db.rows.filter(row => row.outil_id === values[0]);
           if (sql.includes("cree_le < ?")) {
             const [, createdAt, , id] = values;
@@ -35,6 +49,12 @@ class MemoryD1 {
           return { results: rows.slice(0, values[values.length - 1]) };
         },
         async run() {
+          if (sql.startsWith("INSERT INTO commentaires (")) {
+            const [fiche_id, auteur_email, texte, created_at] = values;
+            const id = db.nextCommentId++;
+            db.relationalRows.push({ id, fiche_id, auteur_email, texte, created_at });
+            return { meta: { changes: 1, last_row_id: id } };
+          }
           if (sql.startsWith("INSERT")) {
             const [id, outil_id, texte, auteur, cree_le] = values;
             if (db.rows.some(row => row.id === id)) return { meta: { changes: 0 } };
@@ -167,6 +187,21 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     assert.equal(db.rows.length, 1);
     assert.equal(db.rows[0].texte, "Commentaire propre à A");
     assert.equal(await bucket.get("comments/tool-a-uuid/" + createdComment.commentId + ".json"), null);
+    // The relational D1 endpoint stores and reads comments through fiches.id.
+    response = await call("POST", "/api/commentaires", {
+      ficheId: "tool-a-uuid", texte: "Commentaire relationnel"
+    });
+    assert.equal(response.status, 201);
+    const relationalCreated = await response.json();
+    assert.equal(relationalCreated.commentaire.ficheId, "tool-a-uuid");
+    assert.equal(db.relationalRows.length, 1);
+    response = await call("GET", "/api/fiches/tool-a-uuid/commentaires", undefined, false);
+    assert.equal(response.status, 200);
+    const relationalPage = await response.json();
+    assert.equal(relationalPage.commentaires.length, 1);
+    assert.equal(relationalPage.commentaires[0].text, "Commentaire relationnel");
+    assert.equal(relationalPage.commentaires[0].author, "test@example.com");
+
     response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
     assert.equal(response.status, 200);
     const commentPage = await response.json();
