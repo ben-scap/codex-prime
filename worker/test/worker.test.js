@@ -164,7 +164,7 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     response = await call("POST", "/api/outils/tool-a-uuid/commentaires", { text: "Commentaire propre à A" });
     assert.equal(response.status, 201);
     const createdComment = (await response.clone().json()).comment;
-    assert.equal(db.rows.length, 1);
+    assert.equal(db.rows.length, 22);
     assert.equal(db.rows[0].texte, "Commentaire propre à A");
     assert.equal(await bucket.get("comments/tool-a-uuid/" + createdComment.commentId + ".json"), null);
     response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
@@ -173,6 +173,22 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     assert.equal(commentPage.commentaires.length, 1);
     assert.equal(commentPage.commentaires[0].text, "Commentaire propre à A");
     assert.equal(commentPage.pagination.hasMore, false);
+
+    for (let i = 0; i < 21; i++) {
+      db.rows.push({
+        id: "seed-" + String(i).padStart(2, "0"), outil_id: "tool-a-uuid",
+        texte: "Commentaire " + i, auteur: "Test",
+        cree_le: new Date(Date.UTC(2025, 0, 1, 0, i, 0)).toISOString()
+      });
+    }
+    response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
+    const firstPage = await response.json();
+    assert.equal(firstPage.commentaires.length, 20);
+    assert.equal(firstPage.pagination.hasMore, true);
+    response = await call("GET", "/api/outils/tool-a-uuid/commentaires?cursor=" + encodeURIComponent(firstPage.pagination.nextCursor), undefined, false);
+    const secondPage = await response.json();
+    assert.equal(secondPage.commentaires.length, 2);
+    assert.equal(secondPage.pagination.hasMore, false);
 
     response = await call("PUT", "/api/outils/tool-a-uuid", {
       expectedVersion: 2, tool: { ...updatedA, link_url: "https://a-final.example/" }
