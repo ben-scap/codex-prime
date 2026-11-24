@@ -67,6 +67,24 @@ async function call(method, path, body, authenticated = true) {
   }), env);
 }
 
+test("la navigation de connexion Access fonctionne sans Origin ni JWT, sans redirection externe", async () => {
+  const loginEnv = { ALLOWED_ORIGIN: "https://ben-scap.github.io,https://codex-prime-852.pages.dev" };
+
+  let response = await worker.fetch(new Request(
+    "https://codex-prime-api.example.workers.dev/api/admin/login?return=" +
+    encodeURIComponent("https://ben-scap.github.io/outils.html?admin=1#edition")
+  ), loginEnv);
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), "https://ben-scap.github.io/outils.html?admin=1#edition");
+
+  response = await worker.fetch(new Request(
+    "https://codex-prime-api.example.workers.dev/api/admin/login?return=" +
+    encodeURIComponent("https://evil.example/phishing")
+  ), loginEnv);
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), "https://ben-scap.github.io");
+});
+
 test("R2 fiches individuelles, initialisation non destructive, commentaires isolés et contrôle de version", async () => {
   const keys = await crypto.subtle.generateKey({
     name: "RSASSA-PKCS1-v1_5", modulusLength: 2048,
