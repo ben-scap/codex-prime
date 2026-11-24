@@ -82,7 +82,7 @@ test("la navigation de connexion Access fonctionne sans Origin ni JWT, sans redi
     encodeURIComponent("https://evil.example/phishing")
   ), loginEnv);
   assert.equal(response.status, 302);
-  assert.equal(response.headers.get("location"), "https://ben-scap.github.io");
+  assert.equal(response.headers.get("location"), "https://ben-scap.github.io/");
 });
 
 test("R2 fiches individuelles, initialisation non destructive, commentaires isolés et contrôle de version", async () => {
