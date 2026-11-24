@@ -300,8 +300,9 @@
     }
     const toolRoutes = {
       list: () => '/api/outils',
-      edit: id => '/api/outils/'+encodeURIComponent(id),
-      comments: id => '/api/outils/'+encodeURIComponent(id)+'/commentaires'
+      edit: id => '/api/admin/tools/'+encodeURIComponent(id),
+      comments: id => '/api/outils/'+encodeURIComponent(id)+'/commentaires',
+      addComment: id => '/api/admin/tools/'+encodeURIComponent(id)+'/comments'
     };
     function render(card, tool, comments) {
       card.dataset.category = tool.category;
@@ -396,7 +397,7 @@
       event.preventDefault();const message=document.getElementById('comment-message');const submit=commentForm.querySelector('[type=submit]');submit.disabled=true;
       try{
         const text=commentForm.elements.text.value.trim();if(!text||text.length>5000)throw Error('Commentaire requis (5000 caractères maximum).');
-        const result=await api(toolRoutes.comments(currentCommentId),{method:'POST',body:JSON.stringify({text})});
+        const result=await api(toolRoutes.addComment(currentCommentId),{method:'POST',body:JSON.stringify({text})});
         const state=states.get(currentCommentId);state.comments.push(result.comment);
         const card=cards.find(c=>c.dataset.toolId===currentCommentId);render(card,state.tool,state.comments);
         commentDialog.close();status('Commentaire enregistré dans un objet R2 séparé.');
