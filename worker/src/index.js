@@ -127,8 +127,8 @@ function commentView(row) {
 async function listD1Comments(db, toolId, cursor) {
   const limit = 20;
   const statement = cursor
-    ? db.prepare("SELECT id, outil_id, texte, auteur, cree_le FROM commentaires WHERE outil_id = ? AND (cree_le < ? OR (cree_le = ? AND id < ?)) ORDER BY cree_le DESC, id DESC LIMIT ?").bind(toolId, cursor.createdAt, cursor.createdAt, cursor.id, limit + 1)
-    : db.prepare("SELECT id, outil_id, texte, auteur, cree_le FROM commentaires WHERE outil_id = ? ORDER BY cree_le DESC, id DESC LIMIT ?").bind(toolId, limit + 1);
+    ? db.prepare("SELECT id, outil_id, texte, auteur, cree_le FROM commentaires_legacy WHERE outil_id = ? AND (cree_le < ? OR (cree_le = ? AND id < ?)) ORDER BY cree_le DESC, id DESC LIMIT ?").bind(toolId, cursor.createdAt, cursor.createdAt, cursor.id, limit + 1)
+    : db.prepare("SELECT id, outil_id, texte, auteur, cree_le FROM commentaires_legacy WHERE outil_id = ? ORDER BY cree_le DESC, id DESC LIMIT ?").bind(toolId, limit + 1);
   const result = await statement.all();
   const rows = result.results || [];
   const hasMore = rows.length > limit;
@@ -315,7 +315,7 @@ export default {
           }
           valid++;
           if (body.mode === "preview") continue;
-          const result = await env.DB.prepare("INSERT OR IGNORE INTO commentaires (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
+          const result = await env.DB.prepare("INSERT OR IGNORE INTO commentaires_legacy (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
             .bind(id, outilId, texte, auteur, new Date(date).toISOString()).run();
           if (result.meta?.changes) imported++; else alreadyPresent++;
         } catch { invalid++; }
@@ -361,7 +361,7 @@ export default {
       const auteur = accessEmail(request);
       const commentId = crypto.randomUUID();
       const creeLe = new Date().toISOString();
-      await env.DB.prepare("INSERT INTO commentaires (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
+      await env.DB.prepare("INSERT INTO commentaires_legacy (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
         .bind(commentId, id, body.text.trim(), auteur, creeLe).run();
       const comment = { commentId, toolId: id, text: body.text.trim(), author: auteur, createdAt: creeLe };
       return json({ ok: true, comment }, 201, origin, env);
@@ -372,7 +372,7 @@ export default {
     if (!env.DB) throw new Error("Liaison D1 DB absente.");
     const cutoff = new Date();
     cutoff.setUTCFullYear(cutoff.getUTCFullYear() - 1);
-    const result = await env.DB.prepare("DELETE FROM commentaires WHERE cree_le < ?")
+    const result = await env.DB.prepare("DELETE FROM commentaires_legacy WHERE cree_le < ?")
       .bind(cutoff.toISOString()).run();
     return result;
   }
