@@ -408,9 +408,9 @@
       try{
         const text=commentForm.elements.text.value.trim();if(!text||text.length>5000)throw Error('Commentaire requis (5000 caractères maximum).');
         const result=await api(toolRoutes.addComment(currentCommentId),{method:'POST',body:JSON.stringify({text})});
-        const state=states.get(currentCommentId);state.comments.push(result.comment);
+        const state=states.get(currentCommentId);state.comments.unshift(result.comment);
         const card=cards.find(c=>c.dataset.toolId===currentCommentId);render(card,state.tool,state.comments);
-        commentDialog.close();status('Commentaire enregistré dans un objet R2 séparé.');
+        commentDialog.close();status('Commentaire enregistré dans la base D1.');
       }catch(e){message.textContent=e.message;}finally{submit.disabled=false;}
     });
     document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
