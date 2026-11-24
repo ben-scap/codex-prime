@@ -270,11 +270,21 @@
     }));
     function status(message, initButton) {
       statusBox.replaceChildren(document.createTextNode(message));
-      if (initButton) {
+      if (adminEnabled) {
+        const login = document.createElement('button'); login.type = 'button';
+        login.className = 'admin-action'; login.textContent = 'Se connecter à l’administration';
+        login.addEventListener('click', loginAdmin); statusBox.append(login);
+      }
+      if (initButton && adminEnabled) {
         const button = document.createElement('button'); button.type = 'button';
         button.className = 'admin-action'; button.textContent = 'Initialiser les fiches manquantes dans R2';
         button.addEventListener('click', initializeMissing); statusBox.append(button);
       }
+    }
+    function loginAdmin() {
+      const returnUrl = window.location.origin + window.location.pathname + window.location.search + window.location.hash;
+      const loginUrl = API_BASE_URL + '/api/admin/login?return=' + encodeURIComponent(returnUrl);
+      window.location.assign(loginUrl);
     }
     async function api(path, options={}) {
       const response = await fetch(API_BASE_URL + path, {
