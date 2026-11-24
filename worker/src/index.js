@@ -189,7 +189,7 @@ export default {
       if (category !== null && (!category.trim() || category.length > 100)) {
         return json({ error: "Catégorie invalide." }, 400, origin, env);
       }
-      if (!/^\\d+$/.test(rawOffset) || !Number.isSafeInteger(Number(rawOffset)) || Number(rawOffset) > 1000000) {
+      if (!/^\d+$/.test(rawOffset) || !Number.isSafeInteger(Number(rawOffset)) || Number(rawOffset) > 1000000) {
         return json({ error: "Offset de pagination invalide." }, 400, origin, env);
       }
       const offset = Number(rawOffset);
