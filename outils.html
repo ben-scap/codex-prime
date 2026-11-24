@@ -261,7 +261,7 @@
     const form = document.getElementById('tool-form');
     const commentForm = document.getElementById('comment-form');
     const states = new Map();
-    let adminEnabled = false, currentEditId = null, currentCommentId = null;
+    let adminEnabled = false, currentEditId = null, currentCommentId = null, commentsCursor = null;
     const staticTools = cards.map(card => ({
       toolId: card.dataset.toolId, name: card.querySelector('h3').textContent,
       category: card.dataset.category, type: card.querySelector('.type').textContent,
@@ -324,6 +324,33 @@
       card.querySelector('.add-comment').textContent='Ajouter un commentaire ('+comments.length+')';
       states.set(tool.toolId,{tool:structuredClone(tool),comments:structuredClone(comments)});
     }
+    function appendCommentRows(comments) {
+      const list=document.getElementById('comments-list');
+      comments.forEach(comment=>{
+        const item=document.createElement('div');item.className='comment-item';
+        const body=document.createElement('div');body.textContent=comment.text||comment.texte||'';
+        const date=document.createElement('div');date.className='comment-date';
+        date.textContent=(comment.author||comment.auteur||'Utilisateur')+' · '+(comment.createdAt||comment.cree_le||'');
+        item.append(body,date);list.append(item);
+      });
+    }
+    function addOlderCommentsButton() {
+      if(!commentsCursor)return;
+      const list=document.getElementById('comments-list');
+      const button=document.createElement('button');button.type='button';button.className='tool-action';
+      button.textContent='Charger les 20 commentaires précédents';
+      button.addEventListener('click',async()=>{
+        button.disabled=true;
+        try {
+          const page=await api(toolRoutes.comments(currentCommentId)+'?cursor='+encodeURIComponent(commentsCursor));
+          appendCommentRows(page.commentaires||[]);
+          commentsCursor=page.pagination?.nextCursor||null;
+          button.remove();
+          addOlderCommentsButton();
+        } catch(e) { button.disabled=false;button.textContent='Erreur : réessayer'; }
+      });
+      list.append(button);
+    }
     async function initializeMissing() {
       if (!adminEnabled) return;
       const button=statusBox.querySelector('button');if(button)button.disabled=true;
@@ -369,15 +396,12 @@
         try {
           const result=await api(toolRoutes.comments(currentCommentId));
           state.comments=result.commentaires||[];
+          commentsCursor=result.pagination?.nextCursor||null;
         } catch(e) {
           status('Lecture des commentaires impossible : '+e.message,false);return;
         }
-        state.comments.forEach(comment=>{
-          const item=document.createElement('div');item.className='comment-item';
-          const body=document.createElement('div');body.textContent=comment.text;
-          const date=document.createElement('div');date.className='comment-date';date.textContent=comment.createdAt||'';
-          item.append(body,date);list.append(item);
-        });
+        appendCommentRows(state.comments);
+        addOlderCommentsButton();
         commentForm.reset();
         const commentSubmit=commentForm.querySelector('[type=submit]');
         commentSubmit.disabled=!adminEnabled;
