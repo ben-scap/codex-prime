@@ -139,6 +139,24 @@ async function listD1Comments(db, toolId, cursor) {
     pagination: { limit, hasMore, nextCursor: hasMore && last ? encodeCursor({ createdAt: last.cree_le, id: last.id }) : null }
   };
 }
+async function listRelationalComments(db, ficheId, cursor) {
+  const limit = 20;
+  const statement = cursor
+    ? db.prepare("SELECT id, fiche_id, auteur_email, texte, created_at FROM commentaires WHERE fiche_id = ? AND (created_at < ? OR (created_at = ? AND id < ?)) ORDER BY created_at DESC, id DESC LIMIT ?").bind(ficheId, cursor.createdAt, cursor.createdAt, cursor.id, limit + 1)
+    : db.prepare("SELECT id, fiche_id, auteur_email, texte, created_at FROM commentaires WHERE fiche_id = ? ORDER BY created_at DESC, id DESC LIMIT ?").bind(ficheId, limit + 1);
+  const result = await statement.all();
+  const rows = result.results || [];
+  const hasMore = rows.length > limit;
+  const page = rows.slice(0, limit);
+  const last = page[page.length - 1];
+  return {
+    commentaires: page.map(row => ({
+      commentId: row.id, toolId: row.fiche_id, text: row.texte,
+      author: row.auteur_email, createdAt: row.created_at
+    })),
+    pagination: { limit, hasMore, nextCursor: hasMore && last ? encodeCursor({ createdAt: last.created_at, id: String(last.id) }) : null }
+  };
+}
 function accessReady(env) {
   return env.ACCESS_APP_CONFIGURED === "true" && Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD);
 }
