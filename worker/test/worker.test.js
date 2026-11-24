@@ -226,7 +226,7 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     const legacyKey = "comments/tool-a-uuid/legacy-001.json";
     const legacyValue = {
       commentId: "legacy-001", toolId: "tool-a-uuid", text: "Ancien commentaire R2",
-      author: "Ancien auteur", createdAt: "2026-10-01T10:00:00.000Z"
+      author: "Ancien auteur", createdAt: "2024-10-01T10:00:00.000Z"
     };
     await bucket.put(legacyKey, JSON.stringify(legacyValue));
     response = await call("POST", "/api/admin/import-r2-comments", { mode: "preview" });
