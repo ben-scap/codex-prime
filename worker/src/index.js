@@ -98,7 +98,7 @@ async function getTool(bucket, id) {
   return obj ? obj.json() : null;
 }
 function encodeCursor(value) {
-  return encodeURIComponent(JSON.stringify(value));
+  return JSON.stringify(value);
 }
 function decodeCursor(value) {
   if (!value) return null;
