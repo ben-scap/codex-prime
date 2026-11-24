@@ -1,126 +1,19 @@
-const HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
-const MAX_BODY = 256 * 1024;
-const MAX_TOOLS = 1000;
-const MAX_COMMENTS = 5000;
-const ID_RE = /^[a-zA-Z0-9_-]{1,100}$/;
-const TOOL_PREFIX = "tools/";
-const COMMENT_PREFIX = "comments/";
-
-function json(data, status, origin, env, extra = {}) {
-  const headers = new Headers({ ...HEADERS, ...extra });
-  if (origin) {
-    headers.set("access-control-allow-origin", origin);
-    headers.set("access-control-allow-credentials", "true");
-    headers.set("vary", "Origin");
-  }
-  return new Response(JSON.stringify(data), { status, headers });
-}
-function getOrigin(request, env) {
-  const origin = request.headers.get("Origin") || "";
-  const allowed = (env.ALLOWED_ORIGIN || "https://ben-scap.github.io").split(",").map(x => x.trim());
-  return allowed.includes(origin) ? origin : null;
-}
-function validId(id) { return typeof id === "string" && ID_RE.test(id); }
-function validUrl(value) {
-  if (typeof value !== "string" || value.length > 2048) return false;
-  try { const u = new URL(value); return ["http:", "https:"].includes(u.protocol); } catch { return false; }
-}
-function validJsonValue(value, depth = 0) {
-  if (depth > 8) return false;
-  if (value === null || typeof value === "boolean") return true;
-  if (typeof value === "number") return Number.isFinite(value);
-  if (typeof value === "string") return value.length <= 10000;
-  if (Array.isArray(value)) return value.length <= 200 && value.every(v => validJsonValue(v, depth + 1));
-  if (typeof value === "object") {
-    const entries = Object.entries(value);
-    return entries.length <= 100 && entries.every(([k, v]) => k.length <= 100 && validJsonValue(v, depth + 1));
-  }
-  return false;
-}
-function validTool(tool, id) {
-  if (!tool || typeof tool !== "object" || Array.isArray(tool)) return false;
-  if (tool.toolId !== id || !validId(id)) return false;
-  if (typeof tool.name !== "string" || !tool.name.trim() || tool.name.length > 200) return false;
-  if (typeof tool.category !== "string" || !/^(app|code|context|quality|delivery|ops)$/.test(tool.category)) return false;
-  if (typeof tool.type !== "string" || !tool.type.trim() || tool.type.length > 120) return false;
-  if (typeof tool.description !== "string" || tool.description.length > 5000) return false;
-  if (!validUrl(tool.link_url)) return false;
-  if (typeof tool.link_label !== "string" || tool.link_label.length > 200) return false;
-  if (!tool.custom_fields || typeof tool.custom_fields !== "object" || Array.isArray(tool.custom_fields) || !validJsonValue(tool.custom_fields)) return false;
-  return true;
-}
-function decodePart(part) {
-  const padded = part.replace(/-/g, "+").replace(/_/g, "/");
-  return JSON.parse(atob(padded + "=".repeat((4 - padded.length % 4) % 4)));
-}
-async function verifyAccess(request, env) {
-  if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD) return false;
-  const token = request.headers.get("Cf-Access-Jwt-Assertion");
-  if (!token) return false;
-  try {
-    const team = env.ACCESS_TEAM_DOMAIN.replace(/^https?:\/\//, "").replace(/\/$/, "");
-    const issuer = `https://${team}`;
-    const parts = token.split(".");
-    if (parts.length !== 3) return false;
-    const header = decodePart(parts[0]), payload = decodePart(parts[1]);
-    if (header.alg !== "RS256" || !header.kid || payload.iss !== issuer) return false;
-    const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-    if (!aud.includes(env.ACCESS_AUD)) return false;
-    const now = Math.floor(Date.now() / 1000);
-    if (typeof payload.exp !== "number" || payload.exp <= now || (payload.nbf && payload.nbf > now)) return false;
-    const response = await fetch(`${issuer}/cdn-cgi/access/certs`);
-    if (!response.ok) return false;
-    const keys = await response.json();
-    const jwk = keys.keys?.find(k => k.kid === header.kid);
-    if (!jwk) return false;
-    const key = await crypto.subtle.importKey("jwk", jwk, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
-    const signature = Uint8Array.from(atob(parts[2].replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
-    return crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, signature, new TextEncoder().encode(parts[0] + "." + parts[1]));
-  } catch { return false; }
-}
-async function readJson(request) {
-  const len = Number(request.headers.get("content-length") || 0);
-  if (len > MAX_BODY) throw new Error("BODY_TOO_LARGE");
-  const raw = await request.text();
-  if (new TextEncoder().encode(raw).byteLength > MAX_BODY) throw new Error("BODY_TOO_LARGE");
-  return JSON.parse(raw);
-}
-async function listAll(bucket, prefix) {
-  const keys = [];
-  let cursor;
-  do {
-    const page = await bucket.list({ prefix, cursor, limit: 1000 });
-    keys.push(...page.objects);
-    cursor = page.truncated ? page.cursor : undefined;
-  } while (cursor);
-  return keys;
-}
-async function getTool(bucket, id) {
-  const obj = await bucket.get(TOOL_PREFIX + id + ".json");
-  if (!obj) return null;
-  const tool = await obj.json();
-  const comments = [];
-  const keys = await listAll(bucket, COMMENT_PREFIX + id + "/");
-  for (const key of keys) {
-    const commentObj = await bucket.get(key.key);
-    if (commentObj) comments.push(await commentObj.json());
-  }
-  comments.sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
-  return { ...tool, comments };
-}
-function accessReady(env) {
-  return env.ACCESS_APP_CONFIGURED === "true" && Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD);
-}
-async function requireAdmin(request, env, origin) {
-  if (!accessReady(env)) {
-    return json({ error: "Modifications désactivées : Cloudflare Access n'est pas configuré côté Worker." }, 503, origin, env);
-  }
-  if (!await verifyAccess(request, env)) return json({ error: "Authentification Cloudflare Access requise." }, 401, origin, env);
-  return null;
-}
-
-export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    let path = url.pathname.replace(/\\/+$/, "") || "/";
+
+    // Cette route est protégée en amont par Cloudflare Access.
+    // Elle doit être traitée avant le contrôle JWT du Worker pour établir la session.
+    if (request.method === "GET" && path === "/api/admin/login") {
+      const allowedOrigins = (env.ALLOWED_ORIGIN || "https://ben-scap.github.io").split(",").map(x => x.trim());
+      let destination = allowedOrigins[0];
+      try {
+        const requested = new URL(url.searchParams.get("return") || destination);
+        if (allowedOrigins.includes(requested.origin)) destination = requested.href;
+      } catch {}
+      return Response.redirect(destination, 302);
+    }
+
     const origin = getOrigin(request, env);
     if (request.method === "OPTIONS") {
       if (!origin) return new Response(null, { status: 403 });
@@ -135,8 +28,6 @@ export default {
     }
     if (!origin) return json({ error: "Origin non autorisée." }, 403, null, env);
     if (!(env.DATA || env.OUTILS_BUCKET)) return json({ error: "Liaison R2 DATA absente." }, 503, origin, env);
-    const url = new URL(request.url);
-    let path = url.pathname.replace(/\/+$/, "") || "/";
     // Routes françaises demandées pour le catalogue public.
     const frenchCommentsMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
@@ -171,16 +62,6 @@ export default {
     if (path.startsWith("/api/admin/")) {
       const denied = await requireAdmin(request, env, origin);
       if (denied) return denied;
-    }
-    // Navigation de premier niveau : Access établit sa session, puis retour au site autorisé.
-    if (request.method === "GET" && path === "/api/admin/login") {
-      const allowedOrigins = (env.ALLOWED_ORIGIN || "https://ben-scap.github.io").split(",").map(x => x.trim());
-      let destination = allowedOrigins[0];
-      try {
-        const requested = new URL(url.searchParams.get("return") || destination);
-        if (allowedOrigins.includes(requested.origin)) destination = requested.href;
-      } catch {}
-      return Response.redirect(destination, 302);
     }
     if (request.method === "POST" && path === "/api/admin/initialize") {
       let body;
