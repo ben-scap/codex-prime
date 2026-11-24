@@ -139,6 +139,24 @@ async function listD1Comments(db, toolId, cursor) {
     pagination: { limit, hasMore, nextCursor: hasMore && last ? encodeCursor({ createdAt: last.cree_le, id: last.id }) : null }
   };
 }
+async function listRelationalComments(db, ficheId, cursor) {
+  const limit = 20;
+  const statement = cursor
+    ? db.prepare("SELECT id, fiche_id, auteur_email, texte, created_at FROM commentaires WHERE fiche_id = ? AND (created_at < ? OR (created_at = ? AND id < ?)) ORDER BY created_at DESC, id DESC LIMIT ?").bind(ficheId, cursor.createdAt, cursor.createdAt, cursor.id, limit + 1)
+    : db.prepare("SELECT id, fiche_id, auteur_email, texte, created_at FROM commentaires WHERE fiche_id = ? ORDER BY created_at DESC, id DESC LIMIT ?").bind(ficheId, limit + 1);
+  const result = await statement.all();
+  const rows = result.results || [];
+  const hasMore = rows.length > limit;
+  const page = rows.slice(0, limit);
+  const last = page[page.length - 1];
+  return {
+    commentaires: page.map(row => ({
+      commentId: row.id, toolId: row.fiche_id, text: row.texte,
+      author: row.auteur_email, createdAt: row.created_at
+    })),
+    pagination: { limit, hasMore, nextCursor: hasMore && last ? encodeCursor({ createdAt: last.created_at, id: String(last.id) }) : null }
+  };
+}
 function accessReady(env) {
   return env.ACCESS_APP_CONFIGURED === "true" && Boolean(env.ACCESS_TEAM_DOMAIN && env.ACCESS_AUD);
 }
@@ -203,6 +221,17 @@ export default {
     // Routes françaises demandées pour le catalogue public.
     const frenchCommentsMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
+    const relationalCommentsMatch = path.match(/^\/api\/fiches\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
+    if (request.method === "GET" && relationalCommentsMatch) {
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const ficheId = relationalCommentsMatch[1];
+      const fiche = await env.DB.prepare("SELECT id FROM fiches WHERE id = ? LIMIT 1").bind(ficheId).first();
+      if (!fiche) return json({ error: "Fiche introuvable." }, 404, origin, env);
+      const cursor = decodeCursor(url.searchParams.get("cursor"));
+      if (url.searchParams.has("cursor") && !cursor) return json({ error: "Curseur de pagination invalide." }, 400, origin, env);
+      const result = await listRelationalComments(env.DB, ficheId, cursor);
+      return json(result, 200, origin, env);
+    }
     if (request.method === "GET" && frenchCommentsMatch) {
       const tool = await getTool((env.DATA || env.OUTILS_BUCKET), frenchCommentsMatch[1]);
       if (!tool) return json({ error: "Fiche introuvable." }, 404, origin, env);
