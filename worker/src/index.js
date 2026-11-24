@@ -51,6 +51,15 @@ function decodePart(part) {
   const padded = part.replace(/-/g, "+").replace(/_/g, "/");
   return JSON.parse(atob(padded + "=".repeat((4 - padded.length % 4) % 4)));
 }
+function accessEmail(request) {
+  try {
+    const token = request.headers.get("Cf-Access-Jwt-Assertion");
+    const payload = decodePart(token.split(".")[1]);
+    return typeof payload.email === "string" && payload.email.trim()
+      ? payload.email.trim().slice(0, 120)
+      : "Utilisateur";
+  } catch { return "Utilisateur"; }
+}
 async function verifyAccess(request, env) {
   if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD) return false;
   const token = request.headers.get("Cf-Access-Jwt-Assertion");
@@ -265,7 +274,7 @@ export default {
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
       if (typeof body.text !== "string" || !body.text.trim() || body.text.length > 5000) return json({ error: "Commentaire vide ou trop long (5000 caractères maximum)." }, 422, origin, env);
       if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
-      const auteur = typeof body.auteur === "string" && body.auteur.trim() ? body.auteur.trim().slice(0, 120) : "Utilisateur";
+      const auteur = accessEmail(request);
       const commentId = crypto.randomUUID();
       const creeLe = new Date().toISOString();
       await env.DB.prepare("INSERT INTO commentaires (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
