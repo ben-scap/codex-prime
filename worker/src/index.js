@@ -134,14 +134,14 @@ export default {
       }});
     }
     if (!origin) return json({ error: "Origin non autorisée." }, 403, null, env);
-    if (!env.OUTILS_BUCKET) return json({ error: "Liaison R2 OUTILS_BUCKET absente." }, 503, origin, env);
+    if (!(env.DATA || env.OUTILS_BUCKET)) return json({ error: "Liaison R2 DATA absente." }, 503, origin, env);
     const url = new URL(request.url);
     let path = url.pathname.replace(/\/+$/, "") || "/";
     // Routes françaises demandées pour le catalogue public.
     const frenchCommentsMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
     if (request.method === "GET" && frenchCommentsMatch) {
-      const tool = await getTool(env.OUTILS_BUCKET, frenchCommentsMatch[1]);
+      const tool = await getTool((env.DATA || env.OUTILS_BUCKET), frenchCommentsMatch[1]);
       return tool ? json({ commentaires: tool.comments }, 200, origin, env) : json({ error: "Fiche introuvable." }, 404, origin, env);
     }
     if (request.method === "PUT" && frenchToolMatch) path = "/api/admin/tools/" + frenchToolMatch[1];
@@ -152,12 +152,12 @@ export default {
       return json({ adminEnabled: accessReady(env) }, 200, origin, env);
     }
     if (request.method === "GET" && path === "/api/tools") {
-      const keys = await listAll(env.OUTILS_BUCKET, TOOL_PREFIX);
+      const keys = await listAll((env.DATA || env.OUTILS_BUCKET), TOOL_PREFIX);
       const result = [];
       for (const item of keys) {
         const id = item.key.slice(TOOL_PREFIX.length).replace(/\.json$/, "");
         if (validId(id)) {
-          const tool = await getTool(env.OUTILS_BUCKET, id);
+          const tool = await getTool((env.DATA || env.OUTILS_BUCKET), id);
           if (tool) result.push(tool);
         }
       }
@@ -165,7 +165,7 @@ export default {
     }
     const toolMatch = path.match(/^\/api\/tools\/([a-zA-Z0-9_-]{1,100})$/);
     if (request.method === "GET" && toolMatch) {
-      const tool = await getTool(env.OUTILS_BUCKET, toolMatch[1]);
+      const tool = await getTool((env.DATA || env.OUTILS_BUCKET), toolMatch[1]);
       return tool ? json({ tool }, 200, origin, env) : json({ error: "Fiche introuvable." }, 404, origin, env);
     }
     if (path.startsWith("/api/admin/")) {
@@ -186,9 +186,9 @@ export default {
       for (const tool of body.tools) {
         const id = tool.toolId;
         const key = TOOL_PREFIX + id + ".json";
-        const existing = await env.OUTILS_BUCKET.get(key);
+        const existing = await (env.DATA || env.OUTILS_BUCKET).get(key);
         if (existing) { skipped++; continue; }
-        const inserted = await env.OUTILS_BUCKET.put(key, JSON.stringify({ ...tool, version: 1, updatedAt: new Date().toISOString() }), {
+        const inserted = await (env.DATA || env.OUTILS_BUCKET).put(key, JSON.stringify({ ...tool, version: 1, updatedAt: new Date().toISOString() }), {
           onlyIf: { etagDoesNotMatch: "*" },
           httpMetadata: { contentType: "application/json; charset=utf-8" }
         });
@@ -202,14 +202,14 @@ export default {
       let body;
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
       const key = TOOL_PREFIX + id + ".json";
-      const currentObj = await env.OUTILS_BUCKET.get(key);
+      const currentObj = await (env.DATA || env.OUTILS_BUCKET).get(key);
       if (!currentObj) return json({ error: "Fiche absente. Initialisez le catalogue avant modification." }, 404, origin, env);
       const current = await currentObj.json();
       if (body.expectedVersion !== current.version) return json({ error: "CONFLICT", message: "Cette fiche a été modifiée depuis son ouverture. Rechargez-la avant de recommencer.", currentVersion: current.version }, 409, origin, env);
       const tool = body.tool;
       if (!validTool(tool, id)) return json({ error: "Fiche invalide : vérifiez les champs, les types et l'URL http/https." }, 422, origin, env);
       const updated = { ...tool, version: current.version + 1, updatedAt: new Date().toISOString() };
-      const stored = await env.OUTILS_BUCKET.put(key, JSON.stringify(updated), {
+      const stored = await (env.DATA || env.OUTILS_BUCKET).put(key, JSON.stringify(updated), {
         onlyIf: { etagMatches: currentObj.etag },
         httpMetadata: { contentType: "application/json; charset=utf-8" }
       });
@@ -219,16 +219,16 @@ export default {
     const commentMatch = path.match(/^\/api\/admin\/tools\/([a-zA-Z0-9_-]{1,100})\/comments$/);
     if (request.method === "POST" && commentMatch) {
       const id = commentMatch[1];
-      const toolObj = await env.OUTILS_BUCKET.get(TOOL_PREFIX + id + ".json");
+      const toolObj = await (env.DATA || env.OUTILS_BUCKET).get(TOOL_PREFIX + id + ".json");
       if (!toolObj) return json({ error: "Fiche introuvable." }, 404, origin, env);
       let body;
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
       if (typeof body.text !== "string" || !body.text.trim() || body.text.length > 5000) return json({ error: "Commentaire vide ou trop long (5000 caractères maximum)." }, 422, origin, env);
-      const existingComments = await listAll(env.OUTILS_BUCKET, COMMENT_PREFIX + id + "/");
+      const existingComments = await listAll((env.DATA || env.OUTILS_BUCKET), COMMENT_PREFIX + id + "/");
       if (existingComments.length >= MAX_COMMENTS) return json({ error: "Nombre maximal de commentaires atteint." }, 429, origin, env);
       const commentId = crypto.randomUUID();
       const comment = { commentId, toolId: id, text: body.text.trim(), createdAt: new Date().toISOString() };
-      await env.OUTILS_BUCKET.put(COMMENT_PREFIX + id + "/" + commentId + ".json", JSON.stringify(comment), { httpMetadata: { contentType: "application/json; charset=utf-8" } });
+      await (env.DATA || env.OUTILS_BUCKET).put(COMMENT_PREFIX + id + "/" + commentId + ".json", JSON.stringify(comment), { httpMetadata: { contentType: "application/json; charset=utf-8" } });
       return json({ ok: true, comment }, 201, origin, env);
     }
     return json({ error: "Route introuvable." }, 404, origin, env);
