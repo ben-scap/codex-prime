@@ -245,6 +245,48 @@ export default {
       }
       return json({ ok: true, created, skipped }, 200, origin, env);
     }
+    if (request.method === "POST" && path === "/api/admin/import-r2-comments") {
+      let body;
+      try { body = await readJson(request); } catch (e) {
+        return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env);
+      }
+      if (!["preview", "apply"].includes(body.mode)) return json({ error: "Mode attendu : preview ou apply." }, 422, origin, env);
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const bucket = env.DATA || env.OUTILS_BUCKET;
+      const keys = await listAll(bucket, "comments/");
+      let scanned = 0, valid = 0, invalid = 0, imported = 0, alreadyPresent = 0;
+      for (const item of keys) {
+        scanned++;
+        try {
+          const match = item.key.match(/^comments\/([a-zA-Z0-9_-]{1,100})\/([a-zA-Z0-9_-]{1,100})\.json$/);
+          if (!match) { invalid++; continue; }
+          const object = await bucket.get(item.key);
+          if (!object) continue;
+          const legacy = await object.json();
+          const id = typeof legacy.commentId === "string" && ID_RE.test(legacy.commentId) ? legacy.commentId : match[2];
+          const outilId = typeof legacy.toolId === "string" && validId(legacy.toolId) ? legacy.toolId : match[1];
+          const texte = typeof legacy.text === "string" ? legacy.text.trim() : "";
+          const auteur = typeof legacy.author === "string" && legacy.author.trim() ? legacy.author.trim().slice(0, 120) : "Utilisateur";
+          const date = legacy.createdAt;
+          if (!validId(id) || !validId(outilId) || !texte || texte.length > 5000 || typeof date !== "string" || !Number.isFinite(Date.parse(date))) {
+            invalid++; continue;
+          }
+          valid++;
+          if (body.mode === "preview") continue;
+          const result = await env.DB.prepare("INSERT OR IGNORE INTO commentaires (id, outil_id, texte, auteur, cree_le) VALUES (?, ?, ?, ?, ?)")
+            .bind(id, outilId, texte, auteur, new Date(date).toISOString()).run();
+          if (result.meta?.changes) imported++; else alreadyPresent++;
+        } catch { invalid++; }
+      }
+      return json({
+        ok: true, mode: body.mode, scanned, valid, invalid,
+        imported, alreadyPresent,
+        r2ObjectsDeleted: 0,
+        message: body.mode === "preview"
+          ? "Aucune écriture effectuée. R2 reste intact."
+          : "Import terminé. Aucun objet R2 n'a été supprimé."
+      }, 200, origin, env);
+    }
     const editMatch = path.match(/^\/api\/admin\/tools\/([a-zA-Z0-9_-]{1,100})$/);
     if (request.method === "PUT" && editMatch) {
       const id = editMatch[1];
