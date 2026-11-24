@@ -52,6 +52,10 @@ jobs:
           if (pkg.name !== "codex-prime-api" || lock.name !== pkg.name) throw new Error("package.json/package-lock.json incohérents");
           if (lock.lockfileVersion !== 3) throw new Error("lockfileVersion 3 attendu");
           if (config.main !== "src/index.js" || config.name !== "codex-prime-api") throw new Error("Configuration Wrangler invalide");
+          const d1 = config.d1_databases?.find(item => item.binding === "DB");
+          if (!d1 || d1.database_name !== "projet-db" || d1.database_id !== "985780b8-7be9-4ddb-9325-f6913c5349c1") throw new Error("Liaison D1 DB invalide");
+          if (!fs.existsSync("migrations/0001_commentaires.sql")) throw new Error("Migration D1 absente");
+          if (!config.triggers?.crons?.includes("0 3 * * *")) throw new Error("Cron quotidien absent");
           console.log("Chemins, package-lock.json et configuration Wrangler vérifiés.");
           NODE
           node --check src/index.js
