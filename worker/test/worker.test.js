@@ -202,7 +202,7 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     const savedA = catalog.tools.find(item => item.toolId === "tool-a-uuid");
     const savedB = catalog.tools.find(item => item.toolId === "tool-b-uuid");
     assert.equal(savedA.link_url, "https://a-final.example/");
-    assert.equal(savedB.comments.length, 0);
+    assert.equal("comments" in savedB, false);
     assert.equal(savedB.description, "Description B");
     assert.equal(db.rows.length, 1);
   } finally {
