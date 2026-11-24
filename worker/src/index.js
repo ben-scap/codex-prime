@@ -221,7 +221,7 @@ export default {
     // Routes françaises demandées pour le catalogue public.
     const frenchCommentsMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
-    const relationalCommentsMatch = path.match(/^\\/api\\/fiches\\/([a-zA-Z0-9_-]{1,100})\\/commentaires$/);
+    const relationalCommentsMatch = path.match(/^\/api\/fiches\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     if (request.method === "GET" && relationalCommentsMatch) {
       if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
       const ficheId = relationalCommentsMatch[1];
