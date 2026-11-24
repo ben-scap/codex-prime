@@ -22,8 +22,9 @@ test("la page conserve les 43 outils, leurs champs et les actions de fiche/comme
   assert.doesNotMatch(html, /innerHTML/);
   assert.match(html, /const API_BASE_URL = "https:\/\/codex-prime-api\.toupe-benoit\.workers\.dev"/);
   assert.ok(html.includes("list: () => '/api/outils'"));
-  assert.ok(html.includes("edit: id => '/api/outils/'+encodeURIComponent(id)"));
+  assert.ok(html.includes("edit: id => '/api/admin/tools/'+encodeURIComponent(id)"));
   assert.ok(html.includes("comments: id => '/api/outils/'+encodeURIComponent(id)+'/commentaires'"));
+  assert.ok(html.includes("addComment: id => '/api/admin/tools/'+encodeURIComponent(id)+'/comments'"));
   assert.ok(html.includes('enableButtons(true)'));
   assert.ok(html.includes('commentSubmit.disabled=!adminEnabled'));
 });
