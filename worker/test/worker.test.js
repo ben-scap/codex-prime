@@ -37,7 +37,7 @@ class MemoryD1 {
         async run() {
           if (sql.startsWith("INSERT")) {
             const [id, outil_id, texte, auteur, cree_le] = values;
-            if (db.rows.some(row => row.id === id)) throw new Error("duplicate id");
+            if (db.rows.some(row => row.id === id)) return { meta: { changes: 0 } };
             db.rows.push({ id, outil_id, texte, auteur, cree_le });
             return { meta: { changes: 1 } };
           }
@@ -221,6 +221,43 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     assert.equal("comments" in savedB, false);
     assert.equal(savedB.description, "Description B");
     assert.equal(db.rows.length, 22);
+
+    // Import legacy R2 comments is preview-only until an explicit "apply" request.
+    const legacyKey = "comments/tool-a-uuid/legacy-001.json";
+    const legacyValue = {
+      commentId: "legacy-001", toolId: "tool-a-uuid", text: "Ancien commentaire R2",
+      author: "Ancien auteur", createdAt: "2026-10-01T10:00:00.000Z"
+    };
+    await bucket.put(legacyKey, JSON.stringify(legacyValue));
+    response = await call("POST", "/api/admin/import-r2-comments", { mode: "preview" });
+    assert.equal(response.status, 200);
+    const preview = await response.json();
+    assert.equal(preview.mode, "preview");
+    assert.equal(preview.valid, 1);
+    assert.equal(preview.imported, 0);
+    assert.equal(preview.r2ObjectsDeleted, 0);
+    assert.ok(await bucket.get(legacyKey));
+    assert.equal(db.rows.some(row => row.id === "legacy-001"), false);
+
+    response = await call("POST", "/api/admin/import-r2-comments", { mode: "apply" });
+    assert.equal(response.status, 200);
+    const imported = await response.json();
+    assert.equal(imported.imported, 1);
+    assert.equal(imported.alreadyPresent, 0);
+    assert.equal(imported.r2ObjectsDeleted, 0);
+    assert.ok(await bucket.get(legacyKey));
+    response = await call("POST", "/api/admin/import-r2-comments", { mode: "apply" });
+    assert.equal(response.status, 200);
+    const repeated = await response.json();
+    assert.equal(repeated.imported, 0);
+    assert.equal(repeated.alreadyPresent, 1);
+    assert.ok(await bucket.get(legacyKey));
+
+    // Daily retention removes rows older than 12 months, without touching R2.
+    await worker.scheduled({}, env, { waitUntil() {} });
+    assert.equal(db.rows.some(row => row.id === "legacy-001"), false);
+    assert.equal(db.rows.length, 1);
+    assert.ok(await bucket.get(legacyKey));
   } finally {
     globalThis.fetch = originalFetch;
   }
