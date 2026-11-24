@@ -172,6 +172,16 @@ export default {
       const denied = await requireAdmin(request, env, origin);
       if (denied) return denied;
     }
+    // Navigation de premier niveau : Access établit sa session, puis retour au site autorisé.
+    if (request.method === "GET" && path === "/api/admin/login") {
+      const allowedOrigins = (env.ALLOWED_ORIGIN || "https://ben-scap.github.io").split(",").map(x => x.trim());
+      let destination = allowedOrigins[0];
+      try {
+        const requested = new URL(url.searchParams.get("return") || destination);
+        if (allowedOrigins.includes(requested.origin)) destination = requested.href;
+      } catch {}
+      return Response.redirect(destination, 302);
+    }
     if (request.method === "POST" && path === "/api/admin/initialize") {
       let body;
       try { body = await readJson(request); } catch (e) { return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env); }
