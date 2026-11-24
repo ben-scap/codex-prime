@@ -1,10 +1,8 @@
 const HEADERS = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 const MAX_BODY = 256 * 1024;
 const MAX_TOOLS = 1000;
-const MAX_COMMENTS = 5000;
 const ID_RE = /^[a-zA-Z0-9_-]{1,100}$/;
 const TOOL_PREFIX = "tools/";
-const COMMENT_PREFIX = "comments/";
 
 function json(data, status, origin, env, extra = {}) {
   const headers = new Headers({ ...HEADERS, ...extra });
