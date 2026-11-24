@@ -1,0 +1,28 @@
+name: Apply D1 migrations only
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    name: Apply pending D1 migrations
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply D1 migrations
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply projet-db --remote
+          workingDirectory: worker
+          wranglerVersion: "4.45.0"
