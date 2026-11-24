@@ -3,6 +3,17 @@
   "name": "codex-prime-api",
   "main": "src/index.js",
   "compatibility_date": "2026-11-23",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "projet-db",
+      "database_id": "985780b8-7be9-4ddb-9325-f6913c5349c1",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  },
   "r2_buckets": [
     {
       "binding": "DATA",

@@ -19,6 +19,40 @@ async function makeToken() {
   return input + "." + Buffer.from(signature).toString("base64url");
 }
 
+class MemoryD1 {
+  constructor() { this.rows = []; }
+  prepare(sql) {
+    const db = this;
+    return { bind(...values) {
+      return {
+        async all() {
+          let rows = db.rows.filter(row => row.outil_id === values[0]);
+          if (sql.includes("cree_le < ?")) {
+            const [, createdAt, , id] = values;
+            rows = rows.filter(row => row.cree_le < createdAt || (row.cree_le === createdAt && row.id < id));
+          }
+          rows.sort((a, b) => b.cree_le.localeCompare(a.cree_le) || b.id.localeCompare(a.id));
+          return { results: rows.slice(0, values[values.length - 1]) };
+        },
+        async run() {
+          if (sql.startsWith("INSERT")) {
+            const [id, outil_id, texte, auteur, cree_le] = values;
+            if (db.rows.some(row => row.id === id)) return { meta: { changes: 0 } };
+            db.rows.push({ id, outil_id, texte, auteur, cree_le });
+            return { meta: { changes: 1 } };
+          }
+          if (sql.startsWith("DELETE")) {
+            const before = db.rows.length;
+            db.rows = db.rows.filter(row => row.cree_le >= values[0]);
+            return { meta: { changes: before - db.rows.length } };
+          }
+          return { meta: { changes: 0 } };
+        }
+      };
+    }};
+  }
+}
+
 class MemoryR2 {
   constructor() { this.items = new Map(); this.serial = 0; }
   async get(key) {
@@ -40,9 +74,11 @@ class MemoryR2 {
 }
 
 const bucket = new MemoryR2();
+const db = new MemoryD1();
 let token;
 const env = {
   OUTILS_BUCKET: bucket,
+  DB: db,
   ALLOWED_ORIGIN: "https://ben-scap.github.io",
   ACCESS_TEAM_DOMAIN: team,
   ACCESS_AUD: audience,
@@ -127,10 +163,32 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
 
     response = await call("POST", "/api/outils/tool-a-uuid/commentaires", { text: "Commentaire propre à A" });
     assert.equal(response.status, 201);
-    assert.ok(await bucket.get("comments/tool-a-uuid/" + (await response.clone().json()).comment.commentId + ".json"));
+    const createdComment = (await response.clone().json()).comment;
+    assert.equal(db.rows.length, 1);
+    assert.equal(db.rows[0].texte, "Commentaire propre à A");
+    assert.equal(await bucket.get("comments/tool-a-uuid/" + createdComment.commentId + ".json"), null);
     response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
     assert.equal(response.status, 200);
-    assert.equal((await response.json()).commentaires.length, 1);
+    const commentPage = await response.json();
+    assert.equal(commentPage.commentaires.length, 1);
+    assert.equal(commentPage.commentaires[0].text, "Commentaire propre à A");
+    assert.equal(commentPage.pagination.hasMore, false);
+
+    for (let i = 0; i < 21; i++) {
+      db.rows.push({
+        id: "seed-" + String(i).padStart(2, "0"), outil_id: "tool-a-uuid",
+        texte: "Commentaire " + i, auteur: "Test",
+        cree_le: new Date(Date.UTC(2025, 0, 1, 0, i, 0)).toISOString()
+      });
+    }
+    response = await call("GET", "/api/outils/tool-a-uuid/commentaires", undefined, false);
+    const firstPage = await response.json();
+    assert.equal(firstPage.commentaires.length, 20);
+    assert.equal(firstPage.pagination.hasMore, true);
+    response = await call("GET", "/api/outils/tool-a-uuid/commentaires?cursor=" + encodeURIComponent(firstPage.pagination.nextCursor), undefined, false);
+    const secondPage = await response.json();
+    assert.equal(secondPage.commentaires.length, 2);
+    assert.equal(secondPage.pagination.hasMore, false);
 
     response = await call("PUT", "/api/outils/tool-a-uuid", {
       expectedVersion: 2, tool: { ...updatedA, link_url: "https://a-final.example/" }
@@ -160,10 +218,46 @@ test("R2 fiches individuelles, initialisation non destructive, commentaires isol
     const savedA = catalog.tools.find(item => item.toolId === "tool-a-uuid");
     const savedB = catalog.tools.find(item => item.toolId === "tool-b-uuid");
     assert.equal(savedA.link_url, "https://a-final.example/");
-    assert.equal(savedA.comments.length, 1);
-    assert.equal(savedB.comments.length, 0);
+    assert.equal("comments" in savedB, false);
     assert.equal(savedB.description, "Description B");
-    assert.equal(bucket.items.has("comments/tool-a-uuid/" + savedA.comments[0].commentId + ".json"), true);
+    assert.equal(db.rows.length, 22);
+
+    // Import legacy R2 comments is preview-only until an explicit "apply" request.
+    const legacyKey = "comments/tool-a-uuid/legacy-001.json";
+    const legacyValue = {
+      commentId: "legacy-001", toolId: "tool-a-uuid", text: "Ancien commentaire R2",
+      author: "Ancien auteur", createdAt: "2024-10-01T10:00:00.000Z"
+    };
+    await bucket.put(legacyKey, JSON.stringify(legacyValue));
+    response = await call("POST", "/api/admin/import-r2-comments", { mode: "preview" });
+    assert.equal(response.status, 200);
+    const preview = await response.json();
+    assert.equal(preview.mode, "preview");
+    assert.equal(preview.valid, 1);
+    assert.equal(preview.imported, 0);
+    assert.equal(preview.r2ObjectsDeleted, 0);
+    assert.ok(await bucket.get(legacyKey));
+    assert.equal(db.rows.some(row => row.id === "legacy-001"), false);
+
+    response = await call("POST", "/api/admin/import-r2-comments", { mode: "apply" });
+    assert.equal(response.status, 200);
+    const imported = await response.json();
+    assert.equal(imported.imported, 1);
+    assert.equal(imported.alreadyPresent, 0);
+    assert.equal(imported.r2ObjectsDeleted, 0);
+    assert.ok(await bucket.get(legacyKey));
+    response = await call("POST", "/api/admin/import-r2-comments", { mode: "apply" });
+    assert.equal(response.status, 200);
+    const repeated = await response.json();
+    assert.equal(repeated.imported, 0);
+    assert.equal(repeated.alreadyPresent, 1);
+    assert.ok(await bucket.get(legacyKey));
+
+    // Daily retention removes rows older than 12 months, without touching R2.
+    await worker.scheduled({}, env, { waitUntil() {} });
+    assert.equal(db.rows.some(row => row.id === "legacy-001"), false);
+    assert.equal(db.rows.length, 1);
+    assert.ok(await bucket.get(legacyKey));
   } finally {
     globalThis.fetch = originalFetch;
   }
