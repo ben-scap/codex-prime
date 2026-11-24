@@ -181,6 +181,25 @@ export default {
     }
     if (!origin) return json({ error: "Origin non autorisée." }, 403, null, env);
     if (!(env.DATA || env.OUTILS_BUCKET)) return json({ error: "Liaison R2 DATA absente." }, 503, origin, env);
+    // Catalogue D1 : lecture publique, filtrée et paginée.
+    if (request.method === "GET" && path === "/api/fiches") {
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const category = url.searchParams.get("categorie");
+      const rawOffset = url.searchParams.get("offset") ?? "0";
+      if (category !== null && (!category.trim() || category.length > 100)) {
+        return json({ error: "Catégorie invalide." }, 400, origin, env);
+      }
+      if (!/^\\d+$/.test(rawOffset) || !Number.isSafeInteger(Number(rawOffset)) || Number(rawOffset) > 1000000) {
+        return json({ error: "Offset de pagination invalide." }, 400, origin, env);
+      }
+      const offset = Number(rawOffset);
+      const limit = 20;
+      const statement = category === null
+        ? env.DB.prepare("SELECT id, slug, titre, description, categorie, auteur_email, version, updated_at FROM fiches ORDER BY updated_at DESC LIMIT ? OFFSET ?").bind(limit, offset)
+        : env.DB.prepare("SELECT id, slug, titre, description, categorie, auteur_email, version, updated_at FROM fiches WHERE categorie = ? ORDER BY updated_at DESC LIMIT ? OFFSET ?").bind(category.trim(), limit, offset);
+      const result = await statement.all();
+      return json({ fiches: result.results || [], pagination: { limit, offset, nextOffset: (result.results || []).length === limit ? offset + limit : null } }, 200, origin, env);
+    }
     // Routes françaises demandées pour le catalogue public.
     const frenchCommentsMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
@@ -197,6 +216,29 @@ export default {
     if (request.method === "POST" && frenchCommentsMatch) path = "/api/admin/tools/" + frenchCommentsMatch[1] + "/comments";
     if (path === "/api/outils") path = "/api/tools";
     if (request.method === "GET" && frenchToolMatch) path = "/api/tools/" + frenchToolMatch[1];
+    if (request.method === "POST" && path === "/api/commentaires") {
+      const denied = await requireAdmin(request, env, origin);
+      if (denied) return denied;
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      let body;
+      try { body = await readJson(request); } catch (e) {
+        return json({ error: e.message === "BODY_TOO_LARGE" ? "Corps trop volumineux." : "JSON invalide." }, e.message === "BODY_TOO_LARGE" ? 413 : 400, origin, env);
+      }
+      if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "Corps JSON invalide." }, 400, origin, env);
+      const ficheId = typeof body.ficheId === "string" ? body.ficheId.trim() : "";
+      const texte = typeof body.texte === "string" ? body.texte.trim() : "";
+      if (!ficheId || ficheId.length > 100 || !ID_RE.test(ficheId) || !texte || texte.length > 5000) {
+        return json({ error: "Les champs ficheId et texte sont obligatoires (texte : 5000 caractères maximum)." }, 400, origin, env);
+      }
+      const auteurEmail = accessEmail(request);
+      if (!auteurEmail || auteurEmail === "Utilisateur") return json({ error: "Adresse e-mail de l'auteur indisponible dans la session Cloudflare Access." }, 401, origin, env);
+      const fiche = await env.DB.prepare("SELECT id FROM fiches WHERE id = ? LIMIT 1").bind(ficheId).first();
+      if (!fiche) return json({ error: "Fiche introuvable." }, 400, origin, env);
+      const createdAt = new Date().toISOString();
+      const result = await env.DB.prepare("INSERT INTO commentaires (fiche_id, auteur_email, texte, created_at) VALUES (?, ?, ?, ?)")
+        .bind(ficheId, auteurEmail, texte, createdAt).run();
+      return json({ ok: true, commentaire: { id: result.meta?.last_row_id ?? null, ficheId, auteurEmail, texte, createdAt } }, 201, origin, env);
+    }
     if (request.method === "GET" && path === "/api/status") {
       return json({ adminEnabled: accessReady(env) }, 200, origin, env);
     }
