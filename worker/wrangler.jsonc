@@ -10,7 +10,7 @@
     }
   ],
   "vars": {
-    "ALLOWED_ORIGIN": "https://codex-prime-852.pages.dev,https://ben-scap.github.io",
+    "ALLOWED_ORIGIN": "https://codex-prime-852.pages.dev,https://ben-scap.github.io,https://codex-prime-api.toupe-benoit.workers.dev",
     "TURNSTILE_HOSTNAME": "codex-prime-852.pages.dev",
     "TURNSTILE_ACTION": "soumission"
   }
