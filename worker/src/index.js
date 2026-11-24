@@ -221,6 +221,17 @@ export default {
     // Routes françaises demandées pour le catalogue public.
     const frenchCommentsMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})\/commentaires$/);
     const frenchToolMatch = path.match(/^\/api\/outils\/([a-zA-Z0-9_-]{1,100})$/);
+    const relationalCommentsMatch = path.match(/^\\/api\\/fiches\\/([a-zA-Z0-9_-]{1,100})\\/commentaires$/);
+    if (request.method === "GET" && relationalCommentsMatch) {
+      if (!env.DB) return json({ error: "Liaison D1 DB absente." }, 503, origin, env);
+      const ficheId = relationalCommentsMatch[1];
+      const fiche = await env.DB.prepare("SELECT id FROM fiches WHERE id = ? LIMIT 1").bind(ficheId).first();
+      if (!fiche) return json({ error: "Fiche introuvable." }, 404, origin, env);
+      const cursor = decodeCursor(url.searchParams.get("cursor"));
+      if (url.searchParams.has("cursor") && !cursor) return json({ error: "Curseur de pagination invalide." }, 400, origin, env);
+      const result = await listRelationalComments(env.DB, ficheId, cursor);
+      return json(result, 200, origin, env);
+    }
     if (request.method === "GET" && frenchCommentsMatch) {
       const tool = await getTool((env.DATA || env.OUTILS_BUCKET), frenchCommentsMatch[1]);
       if (!tool) return json({ error: "Fiche introuvable." }, 404, origin, env);
