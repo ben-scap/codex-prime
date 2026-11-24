@@ -1,6 +1,6 @@
   async fetch(request, env) {
     const url = new URL(request.url);
-    let path = url.pathname.replace(/\\/+$/, "") || "/";
+    let path = url.pathname.replace(/\/+$/, "") || "/";
 
     // Cette route est protégée en amont par Cloudflare Access.
     // Elle doit être traitée avant le contrôle JWT du Worker pour établir la session.
