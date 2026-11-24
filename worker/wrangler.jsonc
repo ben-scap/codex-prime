@@ -3,13 +3,15 @@
   "name": "codex-prime-api",
   "main": "src/index.js",
   "compatibility_date": "2026-11-23",
-  "vars": {
-    "ALLOWED_ORIGIN": "https://ben-scap.github.io"
-  },
   "r2_buckets": [
     {
-      "binding": "OUTILS_BUCKET",
+      "binding": "DATA",
       "bucket_name": "formation-s4-donnees"
     }
-  ]
+  ],
+  "vars": {
+    "ALLOWED_ORIGIN": "https://codex-prime-852.pages.dev",
+    "TURNSTILE_HOSTNAME": "codex-prime-852.pages.dev",
+    "TURNSTILE_ACTION": "soumission"
+  }
 }
